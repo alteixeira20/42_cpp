@@ -56,7 +56,7 @@ int	main(int ac, char **av)
 	
 	if (search.empty())
 	{
-		std::cerr << "Error: search string cannout be empty\n";
+		std::cerr << "Error: search string cannot be empty\n";
 		return (1);
 	}
 
