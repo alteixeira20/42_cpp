@@ -10,11 +10,11 @@ void	Zombie::announce(void) const
 Zombie::Zombie(std::string name)
 {
 	_name = name;
-	std::cout << _name << ": was biten!" << std::endl;
+	std::cout << _name << ": was biten (constructor)!" << std::endl;
 }
 
 // Destructor
 Zombie::~Zombie(void)
 {
-	std::cout << _name << ": has died!" << std::endl;
+	std::cout << _name << ": has died (destructor)!" << std::endl;
 }

@@ -4,5 +4,6 @@
 Zombie*	newZombie(std::string name)
 {
 	Zombie*	zombie = new Zombie(name);
+	std::cout << name << ": created Zombie on heap" << std::endl;
 	return zombie;
 }

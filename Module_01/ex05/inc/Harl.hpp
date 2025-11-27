@@ -14,6 +14,8 @@ class	Harl
 		void		info();
 		void		warning();
 		void		error();
+		void		(Harl::*_funcs[4])();
+		std::string	_levels[4];
 };
 
 #endif

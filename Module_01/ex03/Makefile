@@ -1,6 +1,6 @@
 # Program 
 #
-EXEC		= program
+EXEC		= Weapons
 
 # Directories
 SRC_DIR		= src
@@ -29,7 +29,7 @@ all: $(EXEC)
 
 $(EXEC): $(OBJS)
 	@$(COMPILER) $(CFLAGS) $(OBJS) -o $(EXEC)
-	@echo "$(B)Program$(D) compiled $(GRN)successfully$(D)"
+	@echo "$(B)Weapons$(D) compiled $(GRN)successfully$(D)"
 
 # Cleaning Rules
 clean:

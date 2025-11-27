@@ -1,6 +1,6 @@
 # Program 
 #
-EXEC		= This_Is_Brain
+EXEC		= bsp
 
 # Directories
 SRC_DIR		= src
@@ -8,7 +8,10 @@ INC_DIR		= inc
 OBJ_DIR		= obj
 
 # Source Files
-SRC		= $(SRC_DIR)/main.cpp
+SRC		= $(SRC_DIR)/Fixed.cpp
+SRC		+= $(SRC_DIR)/Point.cpp
+SRC		+= $(SRC_DIR)/bsp.cpp
+SRC		+= $(SRC_DIR)/main.cpp
 
 # Object Files
 OBJS		= $(SRC:$(SRC_DIR)/%.c=$(OBJ_DIR)/%.o)
@@ -26,7 +29,7 @@ all: $(EXEC)
 
 $(EXEC): $(OBJS)
 	@$(COMPILER) $(CFLAGS) $(OBJS) -o $(EXEC)
-	@echo "$(B)This Is Brain$(D) compiled $(GRN)successfully$(D)"
+	@echo "$(B)bsp$(D) compiled $(GRN)successfully$(D)"
 
 # Cleaning Rules
 clean:
