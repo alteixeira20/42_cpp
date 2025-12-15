@@ -66,6 +66,11 @@ int	main(int ac, char **av)
 		std::cerr << "Error: could not open input file\n";
 		return (1);
 	}
+	if (content.empty())
+	{
+		std::cerr << "Error: the input file is empty\n";
+		return (1);
+	}
 	searchAndReplace(content, search, replace);
 	if (!writeFile(filename, content))
 	{
