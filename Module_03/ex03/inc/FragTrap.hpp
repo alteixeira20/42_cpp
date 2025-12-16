@@ -3,6 +3,15 @@
 
 #include "ClapTrap.hpp"
 
+/*
+ * FragTrap is a high-energy, high-damage ClapTrap specialization.
+ *
+ * It introduces a unique interaction ability (highFivesGuys)
+ * and defines its own default combat statistics.
+ *
+ * Virtual inheritance ensures correct behavior when combined
+ * with other ClapTrap-derived classes in DiamondTrap.
+ */
 class	FragTrap: virtual public ClapTrap
 {
 	public:

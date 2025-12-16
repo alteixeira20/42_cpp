@@ -1,161 +1,132 @@
 #include "DiamondTrap.hpp"
+#include <iostream>
 
-#include "DiamondTrap.hpp"
+/* Prints a formatted section header. */
+static void section(const std::string &title)
+{
+	std::cout << "\n=== " << title << " ===\n" << std::endl;
+}
+
+/* Prints a simple visual separator. */
+static void separator()
+{
+	std::cout << "----------------------------------------" << std::endl;
+}
 
 int main(void)
 {
-	// ------------------------------------------------------------
-	// 1. Construction
-	// ------------------------------------------------------------
-	// This test validates:
-	//  - Correct constructor chain order: ClapTrap → ScavTrap → FragTrap → DiamondTrap
-	//  - Correct initialization of names ("Diamond" and "Diamond_clap_name")
-	//  - Correct stat inheritance (FragTrap HP & AD, ScavTrap EP)
-	// ------------------------------------------------------------
-	std::cout << "\n=== Creating DiamondTrap ===\n" << std::endl;
+	/*
+	 * 1. Construction
+	 *
+	 * Validates:
+	 *  - Correct constructor chain
+	 *  - Proper initialization of names
+	 *  - Correct stat inheritance
+	 */
+	section("Creating DiamondTrap");
 	DiamondTrap d("Diamond");
+	separator();
 
-
-	// ------------------------------------------------------------
-	// 2. Identity Test (whoAmI)
-	// ------------------------------------------------------------
-	// Expected:
-	//   My DiamondTrap name is Diamond
-	//   and my ClapTrap name is Diamond_clap_name
-	//
-	// This proves that:
-	//  - DiamondTrap has its own _name
-	//  - ClapTrap::_name was properly initialized separately
-	// ------------------------------------------------------------
-	std::cout << "\n=== Testing whoAmI() ===\n" << std::endl;
+	/*
+	 * 2. Identity Test
+	 *
+	 * Expected output:
+	 *   My DiamondTrap name is Diamond
+	 *   and my ClapTrap name is Diamond_clap_name
+	 *
+	 * Confirms separate identity storage.
+	 */
+	section("whoAmI() identity check");
 	d.whoAmI();
+	separator();
 
-
-	// ------------------------------------------------------------
-	// 3. Attack Method Override
-	// ------------------------------------------------------------
-	// DiamondTrap must use **ScavTrap::attack** (NOT FragTrap::attack).
-	// Expected output begins with:
-	//   ScavTrap <name> ferociously attacks ...
-	//
-	// Confirms correct method resolution order (MRO).
-	// ------------------------------------------------------------
-	std::cout << "\n=== Testing Attack (Should use ScavTrap::attack) ===\n" << std::endl;
+	/*
+	 * 3. Attack Method Resolution
+	 *
+	 * DiamondTrap must use ScavTrap::attack().
+	 * Output should clearly identify ScavTrap behavior.
+	 */
+	section("Attack uses ScavTrap::attack");
 	d.attack("Target Dummy");
+	separator();
 
+	/*
+	 * 4. HP & EP Behavior
+	 *
+	 * Expected flow:
+	 *   HP: 120 -> 100 -> 110 -> 0
+	 *   Repair after death must fail.
+	 */
+	section("Damage & repair logic");
+	d.takeDamage(20);
+	d.beRepaired(10);
+	d.takeDamage(200);
+	d.beRepaired(5);
+	separator();
 
-	// ------------------------------------------------------------
-	// 4. HP & EP Logic
-	// ------------------------------------------------------------
-	// Tests:
-	//   - Taking normal damage
-	//   - Repairing when alive
-	//   - Taking fatal damage (drops to 0 HP)
-	//   - Repairing when dead (should NOT work)
-	//
-	// This confirms correct state-based behavior.
-	// ------------------------------------------------------------
-	std::cout << "\n=== Testing Damage & Repairs ===\n" << std::endl;
-	d.takeDamage(20);     // HP: 120 → 100
-	d.beRepaired(10);     // HP: 100 → 110
-	d.takeDamage(200);    // HP: 110 → 0 (death)
-	d.beRepaired(5);      // Should fail (HP = 0)
-
-
-	// ------------------------------------------------------------
-	// 5. FragTrap Special Ability
-	// ------------------------------------------------------------
-	// FragTrap gives DiamondTrap the method highFivesGuys().
-	// Expected:
-	//   FragTrap <name> requests a high five! ✋
-	// ------------------------------------------------------------
-	std::cout << "\n=== Testing FragTrap High Five ===\n" << std::endl;
+	/*
+	 * 5. FragTrap Ability
+	 *
+	 * Confirms FragTrap inheritance.
+	 */
+	section("FragTrap special ability");
 	d.highFivesGuys();
+	separator();
 
-
-	// ------------------------------------------------------------
-	// 6. ScavTrap Special Ability
-	// ------------------------------------------------------------
-	// DiamondTrap inherits guardGate() from ScavTrap.
-	// Expected:
-	//   ScavTrap <name> has entered Gate keeper mode!
-	// ------------------------------------------------------------
-	std::cout << "\n=== Testing ScavTrap Guard Gate ===\n" << std::endl;
+	/*
+	 * 6. ScavTrap Ability
+	 *
+	 * Confirms ScavTrap inheritance.
+	 */
+	section("ScavTrap special ability");
 	d.guardGate();
+	separator();
 
-
-	// ------------------------------------------------------------
-	// 7. Copy Constructor
-	// ------------------------------------------------------------
-	// Tests:
-	//   - Correct copy constructor chain (ClapTrap, ScavTrap, FragTrap, DiamondTrap)
-	//   - Correct deep-copy of DiamondTrap's own name
-	//   - Copy performs independent behavior afterwards
-	// ------------------------------------------------------------
-	std::cout << "\n=== Testing Copy Constructor ===\n" << std::endl;
+	/*
+	 * 7. Copy Constructor
+	 *
+	 * Confirms deep copy and correct constructor chain.
+	 */
+	section("Copy constructor");
 	DiamondTrap copy(d);
 	copy.whoAmI();
+	separator();
 
-
-	// ------------------------------------------------------------
-	// 8. Assignment Operator
-	// ------------------------------------------------------------
-	// Tests:
-	//   - Default-constructed DiamondTrap is overwritten with d's data
-	//   - Correct operator= resolution through the inheritance chain
-	//   - After assignment, names & stats match the source object
-	// ------------------------------------------------------------
-	std::cout << "\n=== Testing Assignment Operator ===\n" << std::endl;
+	/*
+	 * 8. Assignment Operator
+	 *
+	 * Confirms correct operator= behavior.
+	 */
+	section("Assignment operator");
 	DiamondTrap assigned;
 	assigned = d;
 	assigned.whoAmI();
+	separator();
 
-	// ------------------------------------------------------------
-	// 9. Energy Points Depletion Test
-	// ------------------------------------------------------------
-	// DiamondTrap starts with ScavTrap’s EP = 50.
-	//
-	// This loop repeatedly calls attack() until EP reaches 0.
-	// Expected behavior:
-	//   - First 50 attacks decrease EP normally
-	//   - When EP becomes 0, further attacks should print:
-	//       "ClapTrap <name> has no energy to attack!"
-	//
-	// This confirms:
-	//   - EP decreases correctly
-	//   - EP cannot go negative
-	//   - State-based behavior works under stress testing
-	// ------------------------------------------------------------
-	std::cout << "\n=== Testing Energy Depletion ===\n" << std::endl;
+	/*
+	 * 9. Energy Depletion Stress Test
+	 *
+	 * DiamondTrap uses ScavTrap energy (50 EP).
+	 * Attacks must stop cleanly at 0 EP.
+	 */
+	section("Energy depletion test");
+	DiamondTrap battery("Battery");
+	while (battery.getEnergyPoints() > 0)
+		battery.attack("Training Dummy");
+	battery.attack("After exhaustion");
+	battery.attack("After exhaustion");
+	separator();
 
-	DiamondTrap epTest("Battery");
-
-	// Burn all EP
-	while (true)
-	{
-		epTest.attack("Training Dummy");
-
-		// Stop when we observe the “no energy” message
-		if (epTest.getEnergyPoints() == 0)
-			break;
-	}
-
-	// Try a few extra attacks to verify it refuses properly
-	epTest.attack("Dummy After Exhaustion");
-	epTest.attack("Dummy After Exhaustion");
-
-
-	// ------------------------------------------------------------
-	// 10. Destructor Order
-	// ------------------------------------------------------------
-	// Expected destructor order on exit:
-	//   DiamondTrap → FragTrap → ScavTrap → ClapTrap
-	//
-	// This proves:
-	//   - Correct virtual destructor behavior
-	//   - Proper diamond inheritance cleanup
-	// ------------------------------------------------------------
-	std::cout << "\n=== End of main, destructors will now run ===\n" << std::endl;
+	/*
+	 * 10. Destructor Order
+	 *
+	 * Expected order:
+	 *   DiamondTrap
+	 *   FragTrap
+	 *   ScavTrap
+	 *   ClapTrap
+	 */
+	section("End of program");
 
 	return 0;
 }

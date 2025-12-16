@@ -4,6 +4,17 @@
 #include <string>
 #include <iostream>
 
+/*
+ * Base class representing a generic combat unit.
+ *
+ * ClapTrap defines the common attributes and behaviors shared by all derived
+ * trap types (ScavTrap, FragTrap, DiamondTrap).
+ *
+ * It provides:
+ *  - Hit points, energy points, and attack damage
+ *  - Basic combat actions (attack, takeDamage, beRepaired)
+ *  - A virtual destructor to ensure proper cleanup through base pointers
+ */
 class	ClapTrap
 {
 	public:

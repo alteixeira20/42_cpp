@@ -1,8 +1,11 @@
 #include "ScavTrap.hpp"
 
-// Default Constructor
-// 	Calls ClapTrap's default constructor
-// 	Sets ScavTrap specific stats
+/*
+ * Default constructor.
+ *
+ * Initializes a ScavTrap with ClapTrap defaults,
+ * then overrides stats to match ScavTrap specifications.
+ */
 ScavTrap::ScavTrap()
 	: ClapTrap()
 {
@@ -12,7 +15,12 @@ ScavTrap::ScavTrap()
 	_attackDamage = 20;
 }
 
-// Name Constructor
+/*
+ * Named constructor.
+ *
+ * Forwards name to ClapTrap constructor and applies
+ * ScavTrap-specific stat values.
+ */
 ScavTrap::ScavTrap(const std::string &name)
 	: ClapTrap(name)
 {
@@ -23,7 +31,12 @@ ScavTrap::ScavTrap(const std::string &name)
 	_attackDamage = 20;
 }
 
-// Copy Constructor
+/*
+ * Copy constructor.
+ *
+ * Relies on ClapTrap copy constructor for base state,
+ * then performs assignment to ensure full copy.
+ */
 ScavTrap::ScavTrap(const ScavTrap &other)
 	: ClapTrap(other)
 {
@@ -31,7 +44,11 @@ ScavTrap::ScavTrap(const ScavTrap &other)
 	*this = other;
 }
 
-// Copy Assigment Operator
+/*
+ * Copy assignment operator.
+ *
+ * Delegates copying of base attributes to ClapTrap.
+ */
 ScavTrap&	ScavTrap::operator=(const ScavTrap &other)
 {
 	std::cout << "ScavTrap copy assigment operator called" << std::endl;
@@ -40,13 +57,23 @@ ScavTrap&	ScavTrap::operator=(const ScavTrap &other)
 	return (*this);
 }
 
-// Destructor
+/*
+ * Destructor.
+ *
+ * Displays ScavTrap-specific destruction message.
+ * ClapTrap destructor is called automatically after.
+ */
 ScavTrap::~ScavTrap()
 {
 	std::cout << "ScavTrap destructor called for " << _name << std::endl;
 }
 
-// Overriden attack function
+/*
+ * Overrides ClapTrap::attack().
+ *
+ * Uses ScavTrap energy, damage values, and a distinct message
+ * as required by the subject.
+ */
 void	ScavTrap::attack(const std::string &target)
 {
 	if (_hitPoints <= 0)
@@ -67,7 +94,11 @@ void	ScavTrap::attack(const std::string &target)
 		<< std::endl;
 }
 
-// New ScavTrap ability
+/*
+ * Activates Gate Keeper mode.
+ *
+ * Special ScavTrap-only behavior.
+ */
 void	ScavTrap::guardGate()
 {
 	std::cout << "ScavTrap " << _name

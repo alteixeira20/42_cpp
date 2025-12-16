@@ -1,25 +1,57 @@
 #include "ClapTrap.hpp"
 
-
+/*
+ * Default attribute values for ClapTrap.
+ * These constants define the baseline stats shared by all derived classes.
+ */
 const int	ClapTrap::DEFAULT_HIT_POINTS = 10;
 const int	ClapTrap::DEFAULT_ENERGY_POINTS = 10;
 const int	ClapTrap::DEFAULT_ATTACK_DAMAGE = 0;
 
-// Default Constructor
+/*
+ * Default constructor.
+ *
+ * Initializes a ClapTrap with default name and base statistics.
+ */
 ClapTrap::ClapTrap()
-	: _name("Unnamed"), _hitPoints(11), _energyPoints(11), _attackDamage(0)
+	: _name("Unnamed"),
+	  _hitPoints(DEFAULT_HIT_POINTS),
+	  _energyPoints(DEFAULT_ENERGY_POINTS),
+	  _attackDamage(DEFAULT_ATTACK_DAMAGE)
 {
 	std::cout << "ClapTrap default constructor called" << std::endl;
 }
 
-// Copy Constructor
+/*
+ * Named constructor.
+ *
+ * Initializes a ClapTrap with a custom name and default statistics.
+ */
+ClapTrap::ClapTrap(const std::string &name)
+	: _name(name),
+	_hitPoints(DEFAULT_HIT_POINTS),
+	_energyPoints(DEFAULT_ENERGY_POINTS),
+	_attackDamage(DEFAULT_ATTACK_DAMAGE)
+{
+	std::cout << "ClapTrap constructor called for " << _name << std::endl;
+}
+
+/*
+ * Copy constructor.
+ *
+ * Creates a new ClapTrap as a copy of another instance.
+ */
 ClapTrap::ClapTrap(const ClapTrap &other)
 {
 	std::cout << "ClapTrap copy constructor called" << std::endl;
 	*this = other;
 }
 
-// Copy assigment Operator
+/*
+ * Copy assignment operator.
+ *
+ * Assigns all internal state from another ClapTrap.
+ */
 ClapTrap &ClapTrap::operator=(const ClapTrap &other)
 {
 	std::cout << "ClapTrap copy assignment operator called" << std::endl;
@@ -33,23 +65,22 @@ ClapTrap &ClapTrap::operator=(const ClapTrap &other)
 	return (*this);
 }
 
-// Destructor
+/*
+ * Virtual destructor.
+ *
+ * Ensures proper cleanup when deleting derived objects through base pointers.
+ */
 ClapTrap::~ClapTrap()
 {
 	std::cout << "ClapTrap destructor called" << std::endl;
 }
 
-// Main Constructor
-ClapTrap::ClapTrap(const std::string &name)
-	: _name(name),
-	_hitPoints(DEFAULT_HIT_POINTS),
-	_energyPoints(DEFAULT_ENERGY_POINTS),
-	_attackDamage(DEFAULT_ATTACK_DAMAGE)
-{
-	std::cout << "ClapTrap constructor called for " << _name << std::endl;
-}
 
-// Member Functions
+/*
+ * Attacks a target if the ClapTrap has sufficient hit points and energy.
+ *
+ * Consumes one energy point per attack.
+ */
 void	ClapTrap::attack(const std::string &target)
 {
 	if (_hitPoints <= 0)
@@ -70,6 +101,11 @@ void	ClapTrap::attack(const std::string &target)
 		<< std::endl;
 }
 
+/*
+ * Reduces hit points by the given amount.
+ *
+ * A ClapTrap cannot take damage if it is already destroyed.
+ */
 void	ClapTrap::takeDamage(unsigned int amount)
 {
 	if (_hitPoints <= 0)
@@ -86,10 +122,12 @@ void	ClapTrap::takeDamage(unsigned int amount)
 		<< std::endl;
 }
 
-int	ClapTrap::getEnergyPoints() const
-{
-	return (_energyPoints);
-}
+/*
+ * Repairs the ClapTrap by increasing hit points.
+ *
+ * Consumes one energy point.
+ * Repairing is not possible if the ClapTrap is destroyed.
+ */
 void	ClapTrap::beRepaired(unsigned int amount)
 {
 	if (_hitPoints <= 0)
@@ -115,4 +153,14 @@ void	ClapTrap::beRepaired(unsigned int amount)
 		<< " HP! New HP: " << _hitPoints
 		<< " | EP left: " << _energyPoints
 		<< std::endl;
+}
+
+/*
+ * Returns the current energy points.
+ *
+ * Useful for testing and derived-class logic.
+ */
+int	ClapTrap::getEnergyPoints() const
+{
+	return (_energyPoints);
 }

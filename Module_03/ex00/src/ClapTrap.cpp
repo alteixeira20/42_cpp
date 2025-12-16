@@ -1,20 +1,47 @@
 #include "ClapTrap.hpp"
 
-// Default Constructor
+/*
+ * Default constructor.
+ *
+ * Initializes a ClapTrap with a default name and
+ * the base stats defined by the subject.
+ */
 ClapTrap::ClapTrap()
 	: _name("Unnamed"), _hitPoints(10), _energyPoints(10), _attackDamage(0)
 {
 	std::cout << "ClapTrap default constructor called" << std::endl;
 }
 
-// Copy Constructor
+/*
+ * Constructs a ClapTrap with a given name.
+ *
+ * The ClapTrap starts with default hit points,
+ * energy points, and attack damage.
+ */
+ClapTrap::ClapTrap(const std::string &name)
+	: _name(name), _hitPoints(10), _energyPoints(10), _attackDamage(0)
+{
+	std::cout << "ClapTrap constructor called for " << _name << std::endl;
+}
+
+/*
+ * Copy constructor.
+ *
+ * Creates a new ClapTrap by copying the state
+ * of an existing one.
+ */
 ClapTrap::ClapTrap(const ClapTrap &other)
 {
 	std::cout << "ClapTrap copy constructor called" << std::endl;
 	*this = other;
 }
 
-// Copy assigment Operator
+/*
+ * Copy assignment operator.
+ *
+ * Copies all internal state from another ClapTrap,
+ * guarding against self-assignment.
+ */
 ClapTrap &ClapTrap::operator=(const ClapTrap &other)
 {
 	std::cout << "ClapTrap copy assignment operator called" << std::endl;
@@ -28,20 +55,22 @@ ClapTrap &ClapTrap::operator=(const ClapTrap &other)
 	return (*this);
 }
 
-// Destructor
+/*
+ * Destructor.
+ *
+ * Outputs a message to trace object lifetime.
+ */
 ClapTrap::~ClapTrap()
 {
 	std::cout << "ClapTrap destructor called" << std::endl;
 }
 
-// Main Constructor
-ClapTrap::ClapTrap(const std::string &name)
-	: _name(name), _hitPoints(10), _energyPoints(10), _attackDamage(0)
-{
-	std::cout << "ClapTrap constructor called for " << _name << std::endl;
-}
-
-// Member Functions
+/*
+ * Attempts to attack a target.
+ *
+ * The attack consumes one energy point and is only possible
+ * if the ClapTrap has both hit points and energy remaining.
+ */
 void	ClapTrap::attack(const std::string &target)
 {
 	if (_hitPoints <= 0)
@@ -62,6 +91,12 @@ void	ClapTrap::attack(const std::string &target)
 		<< std::endl;
 }
 
+/*
+ * Applies damage to the ClapTrap.
+ *
+ * If the ClapTrap is already destroyed, no further
+ * damage is applied. Hit points are never negative.
+ */
 void	ClapTrap::takeDamage(unsigned int amount)
 {
 	if (_hitPoints <= 0)
@@ -78,6 +113,13 @@ void	ClapTrap::takeDamage(unsigned int amount)
 		<< std::endl;
 }
 
+/*
+ * Repairs the ClapTrap.
+ *
+ * Restores hit points while consuming energy.
+ * This action is only possible if the ClapTrap
+ * is alive and has available energy.
+ */
 void	ClapTrap::beRepaired(unsigned int amount)
 {
 	if (_hitPoints <= 0)

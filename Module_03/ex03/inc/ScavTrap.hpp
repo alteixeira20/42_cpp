@@ -3,6 +3,15 @@
 
 #include "ClapTrap.hpp"
 
+/*
+ * ScavTrap is a specialized ClapTrap with enhanced durability
+ * and a unique defensive ability.
+ *
+ * It overrides the attack behavior and introduces Gate Keeper mode.
+ *
+ * Virtual inheritance is used to ensure that DiamondTrap contains
+ * only one ClapTrap subobject.
+ */
 class	ScavTrap: virtual public ClapTrap
 {
 	public:

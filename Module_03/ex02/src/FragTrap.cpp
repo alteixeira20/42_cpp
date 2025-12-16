@@ -1,28 +1,40 @@
 #include "FragTrap.hpp"
 
-// Default Constructor
+/*
+ * Default constructor.
+ *
+ * Initializes a FragTrap with default name and FragTrap-specific stats.
+ */
 FragTrap::FragTrap()
 	: ClapTrap("Unnamed")
 {
-	_hitPoints = 100;
+	_hitPoints = 120;
 	_energyPoints = 100;
 	_attackDamage = 30;
 
 	std::cout << "FragTrap default constructor called" << std::endl;
 }
 
-// Named Constructor
+/*
+ * Named constructor.
+ *
+ * Forwards the name to ClapTrap and applies FragTrap stats.
+ */
 FragTrap::FragTrap(const std::string &name)
 	: ClapTrap(name)
 {
-	_hitPoints = 100;
+	_hitPoints = 120;
 	_energyPoints = 100;
 	_attackDamage = 30;
 
 	std::cout << "FragTrap constructor called for " << _name << std::endl;
 }
 
-// Copy Constructor
+/*
+ * Copy constructor.
+ *
+ * Initializes the FragTrap by copying another instance.
+ */
 FragTrap::FragTrap(const FragTrap &other)
 	: ClapTrap(other)
 {
@@ -30,7 +42,11 @@ FragTrap::FragTrap(const FragTrap &other)
 	*this = other;
 }
 
-// Assigment Operator
+/*
+ * Copy assignment operator.
+ *
+ * Delegates base class copying to ClapTrap.
+ */
 FragTrap&	FragTrap::operator=(const FragTrap &other)
 {
 	std::cout << "FragTrap copy assigment operator called" << std::endl;
@@ -41,13 +57,19 @@ FragTrap&	FragTrap::operator=(const FragTrap &other)
 	return (*this);
 }
 
-// Destructor
+/*
+ * Destructor.
+ */
 FragTrap::~FragTrap()
 {
 	std::cout << "FragTrap destructor called for " << _name << std::endl;
 }
 
-// Special Action
+/*
+ * Special ability.
+ *
+ * Displays a positive interaction request.
+ */
 void	FragTrap::highFivesGuys()
 {
 	std::cout << "FragTrap " << _name

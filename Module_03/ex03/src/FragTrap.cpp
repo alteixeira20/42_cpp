@@ -1,31 +1,44 @@
 #include "FragTrap.hpp"
 
+/* Default attribute values specific to FragTrap. */
 const int	FragTrap::DEFAULT_HIT_POINTS = 120;
 const int	FragTrap::DEFAULT_ENERGY_POINTS = 100;
 const int	FragTrap::DEFAULT_ATTACK_DAMAGE = 30;
 
-// Default Constructor
+/*
+ * Default constructor.
+ *
+ * Initializes a FragTrap with default name and FragTrap-specific stats.
+ */
 FragTrap::FragTrap()
 	: ClapTrap("Unnamed")
 {
-	_hitPoints = 121;
-	_energyPoints = 101;
-	_attackDamage = 31;
+	_hitPoints = DEFAULT_HIT_POINTS;
+	_energyPoints = DEFAULT_ENERGY_POINTS;
+	_attackDamage = DEFAULT_ATTACK_DAMAGE;
 
 	std::cout << "FragTrap default constructor called" << std::endl;
 }
 
-// Named Constructor
+/*
+ * Named constructor.
+ *
+ * Initializes a FragTrap with a custom name and FragTrap-specific stats.
+ */
 FragTrap::FragTrap(const std::string &name)
 	: ClapTrap(name)
 {
 	_hitPoints = DEFAULT_HIT_POINTS;
 	_energyPoints = DEFAULT_ENERGY_POINTS;
 	_attackDamage = DEFAULT_ATTACK_DAMAGE;
-	std::cout << "FragTrap constructor called for " << _name << std::endl;
+	std::cout << "FragTrap constructor called for " << name << std::endl;
 }
 
-// Copy Constructor
+/*
+ * Copy constructor.
+ *
+ * Creates a FragTrap as a copy of another instance.
+ */
 FragTrap::FragTrap(const FragTrap &other)
 	: ClapTrap(other)
 {
@@ -33,7 +46,11 @@ FragTrap::FragTrap(const FragTrap &other)
 	*this = other;
 }
 
-// Assigment Operator
+/*
+ * Copy assignment operator.
+ *
+ * Assigns all ClapTrap attributes from another FragTrap.
+ */
 FragTrap&	FragTrap::operator=(const FragTrap &other)
 {
 	std::cout << "FragTrap copy assigment operator called" << std::endl;
@@ -44,13 +61,19 @@ FragTrap&	FragTrap::operator=(const FragTrap &other)
 	return (*this);
 }
 
-// Destructor
+/*
+ * Destructor.
+ */
 FragTrap::~FragTrap()
 {
 	std::cout << "FragTrap destructor called for " << _name << std::endl;
 }
 
-// Special Action
+/*
+ * Requests a high five.
+ *
+ * This is a FragTrap-exclusive action.
+ */
 void	FragTrap::highFivesGuys()
 {
 	std::cout << "FragTrap " << _name

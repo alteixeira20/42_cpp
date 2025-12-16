@@ -4,6 +4,15 @@
 #include <string>
 #include <iostream>
 
+/*
+ * Base class representing a generic combat unit.
+ *
+ * ClapTrap defines the shared state and behavior for all trap types,
+ * including hit points, energy points, and attack damage.
+ *
+ * This class is designed to be inherited from in later exercises,
+ * serving as the foundation for more specialized traps.
+ */
 class	ClapTrap
 {
 	public:

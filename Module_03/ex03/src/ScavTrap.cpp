@@ -1,32 +1,47 @@
 #include "ScavTrap.hpp"
 
+/*
+ * Default attribute values specific to ScavTrap.
+ */
 const int	ScavTrap::DEFAULT_HIT_POINTS = 100;
 const int	ScavTrap::DEFAULT_ENERGY_POINTS = 50;
 const int	ScavTrap::DEFAULT_ATTACK_DAMAGE = 20;
-// Default Constructor
-// 	Calls ClapTrap's default constructor
-// 	Sets ScavTrap specific stats
+
+/*
+ * Default constructor.
+ *
+ * Initializes a ScavTrap with default name and ScavTrap-specific stats.
+ * ClapTrap is constructed first due to inheritance.
+ */
 ScavTrap::ScavTrap()
 	: ClapTrap()
 {
 	std::cout << "ScavTrap default constructor called" << std::endl;
-	_hitPoints = 101;
-	_energyPoints = 51;
-	_attackDamage = 21;
-}
-
-// Name Constructor
-ScavTrap::ScavTrap(const std::string &name)
-	: ClapTrap(name)
-{
-	std::cout << "ScavTrap constructor called for "
-		<< _name << std::endl;
 	_hitPoints = DEFAULT_HIT_POINTS;
 	_energyPoints = DEFAULT_ENERGY_POINTS;
 	_attackDamage = DEFAULT_ATTACK_DAMAGE;
 }
 
-// Copy Constructor
+/*
+ * Named constructor.
+ *
+ * Initializes a ScavTrap with a custom name and ScavTrap-specific stats.
+ */
+ScavTrap::ScavTrap(const std::string &name)
+	: ClapTrap(name)
+{
+	std::cout << "ScavTrap constructor called for "
+		<< name << std::endl;
+	_hitPoints = DEFAULT_HIT_POINTS;
+	_energyPoints = DEFAULT_ENERGY_POINTS;
+	_attackDamage = DEFAULT_ATTACK_DAMAGE;
+}
+
+/*
+ * Copy constructor.
+ *
+ * Creates a ScavTrap as a copy of another instance.
+ */
 ScavTrap::ScavTrap(const ScavTrap &other)
 	: ClapTrap(other)
 {
@@ -34,7 +49,11 @@ ScavTrap::ScavTrap(const ScavTrap &other)
 	*this = other;
 }
 
-// Copy Assigment Operator
+/*
+ * Copy assignment operator.
+ *
+ * Assigns all ClapTrap attributes from another ScavTrap.
+ */
 ScavTrap&	ScavTrap::operator=(const ScavTrap &other)
 {
 	std::cout << "ScavTrap copy assigment operator called" << std::endl;
@@ -43,13 +62,17 @@ ScavTrap&	ScavTrap::operator=(const ScavTrap &other)
 	return (*this);
 }
 
-// Destructor
+/* Destructor */
 ScavTrap::~ScavTrap()
 {
 	std::cout << "ScavTrap destructor called for " << _name << std::endl;
 }
 
-// Overriden attack function
+/*
+ * Overridden attack method.
+ *
+ * Uses ScavTrap-specific attack message and stats.
+ */
 void	ScavTrap::attack(const std::string &target)
 {
 	if (_hitPoints <= 0)
@@ -70,7 +93,11 @@ void	ScavTrap::attack(const std::string &target)
 		<< std::endl;
 }
 
-// New ScavTrap ability
+/*
+ * Activates Gate Keeper mode.
+ *
+ * This is a ScavTrap-exclusive ability.
+ */
 void	ScavTrap::guardGate()
 {
 	std::cout << "ScavTrap " << _name

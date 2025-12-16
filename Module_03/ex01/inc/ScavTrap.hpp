@@ -3,6 +3,13 @@
 
 #include "ClapTrap.hpp"
 
+/*
+ * Specialized ClapTrap with enhanced durability and defense.
+ *
+ * ScavTrap inherits from ClapTrap and overrides certain behaviors
+ * to reflect its stronger defensive role. It introduces a unique
+ * ability (Gate Keeper mode) not available to the base class.
+ */
 class	ScavTrap: public ClapTrap
 {
 	public:
@@ -12,8 +19,19 @@ class	ScavTrap: public ClapTrap
 		ScavTrap &operator=(const ScavTrap &other);	// Assignment Operator
 		~ScavTrap();					// Destructor
 
-		void	attack(const std::string &target);	// Override of ClapTrap
-		void	guardGate();				// Special Ability
+		/*
+		 * Overrides ClapTrap::attack().
+		 * Uses ScavTrap-specific stats and message.
+		 */
+		void	attack(const std::string &target);
+		
+		/*
+		 * Activates Gate Keeper mode.
+		 *
+		 * This is a ScavTrap-exclusive ability that represents
+		 * a defensive stance.
+		 */
+		void	guardGate();
 };
 
 #endif
