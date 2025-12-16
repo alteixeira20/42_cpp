@@ -1,90 +1,78 @@
 <p align="center">
   <img src="https://img.shields.io/badge/C%2B%2B98-004482?style=for-the-badge&logo=cplusplus&logoColor=white" alt="C++98 badge">
   <img src="https://img.shields.io/badge/Inheritance-0A5F38?style=for-the-badge&logoColor=white" alt="Inheritance badge">
-  <img src="https://img.shields.io/badge/Method%20Overrides-7C3AED?style=for-the-badge&logoColor=white" alt="Overrides badge">
-  <img src="https://img.shields.io/badge/Diamond%20Problem-1D3557?style=for-the-badge&logoColor=white" alt="Diamond badge">
-  <img src="https://img.shields.io/badge/Stateful%20Objects-B23A48?style=for-the-badge&logoColor=white" alt="State badge">
+  <img src="https://img.shields.io/badge/Overrides-7C3AED?style=for-the-badge&logoColor=white" alt="Overrides badge">
+  <img src="https://img.shields.io/badge/Diamond%20Shape-1D3557?style=for-the-badge&logoColor=white" alt="Diamond badge">
+  <img src="https://img.shields.io/badge/Stateful%20Robots-B23A48?style=for-the-badge&logoColor=white" alt="State badge">
 </p>
 
 <h1 align="center">Module 03 — Inheritance & Specialization</h1>
-<p align="center">Build a family of ClapTraps, layer behaviors through inheritance, and resolve diamond quirks.</p>
+<p align="center">ClapTrap family tree: base stats, tougher variants, and a diamond that mixes them.</p>
 
-## Table of Contents
-1. [At a Glance](#at-a-glance)
-2. [Learning Objectives](#learning-objectives)
-3. [Key Concepts to Review](#key-concepts-to-review)
-4. [Exercises Overview](#exercises-overview)
-5. [Implementation Notes per Exercise](#implementation-notes-per-exercise)
-6. [Rules & Constraints](#rules--constraints)
-7. [Approach & Tips](#approach--tips)
-8. [What to Deliver](#what-to-deliver)
-9. [Looking Ahead](#looking-ahead)
+## From Previous Modules
+- Same C++98 rules, no STL containers, no `using namespace`.
+- Orthodox Canonical Form on every class; constructor/destructor logs stay for traceability.
+- Stream-based output and explicit ownership checks (HP/EP gating) continue from Modules 00–02.
 
-## At a Glance
-> **Highlights:** Practice single and multiple inheritance while keeping lifecycles and state straight.
-- Start with a base ClapTrap and progressively specialize stats and behavior.
-- Override methods cleanly and reuse base logic through protected members.
-- Navigate a diamond hierarchy (ClapTrap ← ScavTrap/FragTrap ← DiamondTrap) without ambiguity.
-- Keep stateful rules (HP/EP/AD) consistent across derived classes.
+## What’s New Here
+- Single inheritance: extend `ClapTrap` into `ScavTrap` and `FragTrap` with new stats/abilities.
+- Multiple inheritance: merge both branches into `DiamondTrap`, pick which base behavior to call.
+- Protected members in the base so derived classes can reuse and tweak `_name`, `_hitPoints`, `_energyPoints`, `_attackDamage`.
 
-## Learning Objectives
-> **Goal:** Extend and combine behaviors via inheritance without breaking object state.
-- Use protected members to share data across derived classes.
-- Override functions while respecting base contracts and adding flavor.
-- Chain constructors/destructors correctly and observe order in multiple inheritance.
-- Resolve name clashes and pick the right base implementation (e.g., ScavTrap::attack).
-- Maintain consistent stat initialization across the hierarchy.
+## Exercises (based on this codebase)
 
-## Key Concepts to Review
-> **Refresh before coding.**
-- Constructor/destructor chaining; order of base/derived calls.
-- Access specifiers: `protected` vs `private` in base classes.
-- Overriding vs hiding; calling a specific base implementation (`ScavTrap::attack`).
-- Multiple inheritance basics and diamond issues; ensuring one ClapTrap subobject.
-- Default values and static constants for shared defaults (HP/EP/AD).
+- **ex00 — ClapTrap** (`Module_03/ex00`): Base robot with defaults HP=10, EP=10, AD=0. Attack/repair each consume 1 EP; actions are blocked at 0 HP or 0 EP. Damage floors at 0 HP. Constructors/destructor print lifecycle lines.
+  - Run: `make -C ex00 && ./ex00/ClapTrap`
 
-## Exercises Overview
-> **What you build and why.**
+- **ex01 — ScavTrap** (`Module_03/ex01`): Inherits `ClapTrap`, sets HP=100, EP=50, AD=20, overrides `attack` with a ScavTrap message, adds `guardGate()`. Uses protected base members directly. Copy/assign delegate to `ClapTrap`.
+  - Run: `make -C ex01 && ./ex01/ScavTrap`
 
-| Exercise | Purpose | Focus |
-| :------: | ------- | ----- |
-| `ex00` ClapTrap | Baseline robot with HP/EP/AD and simple actions. | State checks, basic methods, OCF. |
-| `ex01` ScavTrap | Derive from ClapTrap with boosted stats and guard mode. | Inheritance, overrides, new ability. |
-| `ex02` FragTrap | Another derived type with different stats and high five. | Alternative specialization, shared base logic. |
-| `ex03` DiamondTrap | Combine ScavTrap + FragTrap into one (diamond). | Multiple inheritance, name handling, method resolution. |
+- **ex02 — FragTrap** (`Module_03/ex02`): Inherits `ClapTrap`, sets HP=120, EP=100, AD=30 (note: HP is 120 in this repo), adds `highFivesGuys()`. Lifecycle messages are FragTrap-specific; base logic reused for damage/repair.
+  - Run: `make -C ex02 && ./ex02/FragTrap`
 
-## Implementation Notes per Exercise
-> **How the solutions behave in this repo.**
-- **ex00:** `ClapTrap` stores name/HP/EP/AD; guards actions when HP or EP are zero. Constructors/destructor log calls. Attack/repair consume EP; damage floors HP at 0.
-- **ex01:** `ClapTrap` members made protected. `ScavTrap` sets HP 100 / EP 50 / AD 20, overrides `attack` with custom messaging, adds `guardGate`. Copy/assign reuse `ClapTrap` logic.
-- **ex02:** `FragTrap` sets HP 100 / EP 100 / AD 30, adds `highFivesGuys`. Inherits ClapTrap behavior; logs lifecycle.
-- **ex03:** `DiamondTrap` inherits `ScavTrap` and `FragTrap`. Uses ScavTrap’s attack, FragTrap’s HP/AD, ScavTrap’s EP. Stores its own `_name` while `ClapTrap::_name` gets `<name>_clap_name`. `whoAmI` prints both names. Copy/assign forward to base; destructor order shows the diamond unwinding. Includes EP exhaustion test to ensure state checks hold.
+- **ex03 — DiamondTrap** (`Module_03/ex03`): Inherits both `ScavTrap` and `FragTrap`. Uses FragTrap stats (HP=120, AD=30) and ScavTrap energy (EP=50). Attack explicitly calls `ScavTrap::attack`. Keeps its own `_name` while `ClapTrap::_name` stores `<name>_clap_name`. `whoAmI()` prints both. Includes an energy-depletion loop using `getEnergyPoints()`. Makefile builds with `-Wshadow -Wno-shadow`.
+  - Run: `make -C ex03 && ./ex03/DiamondTrap`
 
-## Rules & Constraints
-> **Non-negotiables from the subject.**
-- Compiler: `c++` with `-Wall -Wextra -Werror`, compatible with `-std=c++98`.
-- Forbidden: `printf`/`malloc`/`free`, external libs, `using namespace`, `friend`.
-- STL containers/algorithms still off-limits until Module 08.
-- Headers must be guarded and self-contained; implementation in `.cpp`.
+## Key Behaviors Shown in the Code
+- **Action gating** (shared):  
+```cpp
+if (_hitPoints <= 0) { /* cannot act */ }
+if (_energyPoints <= 0) { /* cannot act */ }
+```
+- **ScavTrap override**:  
+```cpp
+void ScavTrap::attack(const std::string &target) {
+    _energyPoints--;
+    std::cout << "ScavTrap " << _name
+              << " ferociously attacks " << target
+              << ", dealing " << _attackDamage << " damage! EP left: "
+              << _energyPoints << std::endl;
+}
+```
+- **FragTrap special**:  
+```cpp
+void FragTrap::highFivesGuys() {
+    std::cout << "FragTrap " << _name << " requests a high five! ✋" << std::endl;
+}
+```
+- **DiamondTrap identity & attack**:  
+```cpp
+DiamondTrap::DiamondTrap(const std::string &name)
+ : ClapTrap(name + "_clap_name"), ScavTrap(name), FragTrap(name), _name(name) {
+    _hitPoints = FragTrap::DEFAULT_HIT_POINTS;   // 120
+    _energyPoints = ScavTrap::DEFAULT_ENERGY_POINTS; // 50
+    _attackDamage = FragTrap::DEFAULT_ATTACK_DAMAGE; // 30
+}
+void DiamondTrap::attack(const std::string &target) { ScavTrap::attack(target); }
+void DiamondTrap::whoAmI() {
+    std::cout << "My DiamondTrap name is " << _name
+              << ", and my ClapTrap name is " << ClapTrap::_name << std::endl;
+}
+```
 
-## Approach & Tips
-> **Stay efficient and evaluator-friendly.**
-- Initialize stats in constructors, not post-construction assignments; reuse base ctors.
-- When overriding, call base checks if appropriate or fully replace behavior consistently.
-- In multiple inheritance, be explicit about which base method to use (e.g., `ScavTrap::attack`).
-- Keep default values as constants to avoid magic numbers and to coordinate between bases.
-- Ensure copy/assignment propagate both base and derived state; watch for slicing.
-- Add diagnostic output thoughtfully to verify ctor/dtor order and method resolution.
+## Build Notes
+- Compile flags are `-Wall -Wextra -Werror -std=c++98`; ex03 adds `-Wshadow -Wno-shadow`.
+- Constructors/destructors log creation and destruction to visualize chaining (base first, derived next; reverse on destruction).
 
-## What to Deliver
-> **Turn-in checklist per exercise.**
-- `ex00`: `Makefile`, `ClapTrap.hpp`, `ClapTrap.cpp`, `main.cpp`.
-- `ex01`: `Makefile`, `ClapTrap.*`, `ScavTrap.*`, `main.cpp`.
-- `ex02`: `Makefile`, `ClapTrap.*`, `FragTrap.*`, `main.cpp`.
-- `ex03`: `Makefile`, `ClapTrap.*`, `ScavTrap.*`, `FragTrap.*`, `DiamondTrap.*`, `main.cpp`.
-
-## Looking Ahead
-> **How this sets up later modules.**
-- Inheritance patterns here prepare for abstract bases and polymorphism in Module 04.
-- State and lifecycle discipline informs RAII and exceptions in Module 05.
-- Understanding multiple inheritance clarifies interface design choices in future modules.
+## Forward Link
+- Next up (Module 04): abstract bases and runtime polymorphism build on these inheritance and override patterns.
