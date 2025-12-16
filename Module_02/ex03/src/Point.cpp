@@ -1,46 +1,67 @@
 #include "Point.hpp"
 
-// Default Constructor
-// 	Must use initializer list because _x and _y are const
+/*
+ * Default constructor.
+ *
+ * Initializes the point at the origin.
+ * An initializer list is required because _x and _y are const.
+ */
 Point::Point()
 	: _x(0), _y(0)
 {
 }
 
-// Construct 2 floats via Fixed class
+/*
+ * Constructs a point from two floating-point values.
+ *
+ * The values are converted to fixed-point using the Fixed class.
+ */
 Point::Point(float x, float y)
-	: _x(Fixed(x)), _y(Fixed (y))
+	: _x(Fixed(x)), _y(Fixed(y))
 {
 }
 
-// Copy Constructor
-// 	Initializes the const members using the other object's value
+/*
+ * Copy constructor.
+ *
+ * Initializes the const members using another Point's coordinates.
+ */
 Point::Point(const Point &other)
 	: _x(other._x), _y(other._y)
 {
 }
 
-// Assignment Operator
-// 	Since _x and _y are const we cannot assign new values to them.
-// 	So this operator must return without doing anything (overload)
-Point	&Point::operator=(const Point &other)
+/*
+ * Assignment operator.
+ *
+ * Since Point is immutable (_x and _y are const),
+ * this operator cannot modify the instance.
+ */
+Point &Point::operator=(const Point &other)
 {
 	(void)other;
 	return (*this);
 }
 
-// Destructor
+/*
+ * Destructor.
+ */
 Point::~Point()
 {
 }
 
-// Getters
-Fixed	Point::getX() const
+/*
+ * Returns the x-coordinate.
+ */
+Fixed const&	Point::getX() const
 {
 	return (_x);
 }
 
-Fixed	Point::getY() const
+/*
+ * Returns the y-coordinate.
+ */
+Fixed const&	Point::getY() const
 {
 	return (_y);
 }

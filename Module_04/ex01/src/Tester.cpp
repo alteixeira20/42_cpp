@@ -57,7 +57,7 @@ void	test_deepcopy_dog(void)
 	print_idea("  basic idea[0]: ", basic.getBrain()->getIdea(0));
 	print_idea("  basic idea[10]: ", basic.getBrain()->getIdea(10));
 	print_idea("  basic idea[42]: ", basic.getBrain()->getIdea(42));
-	print_idea("  basic idea[99]: ", basic.getBrain()->getIdea(42));
+	print_idea("  basic idea[99]: ", basic.getBrain()->getIdea(99));
 }
 
 void	test_deepcopy_cat(void)

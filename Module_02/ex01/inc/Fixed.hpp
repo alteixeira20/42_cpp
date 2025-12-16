@@ -4,6 +4,18 @@
 #include <iostream>
 #include <cmath>
 
+/*
+ * Fixed-point number class.
+ *
+ * Represents a fixed-point value using an integer storage and a fixed
+ * number of fractional bits.
+ *
+ * This class follows the Orthodox Canonical Form (OCF):
+ *  - Default constructor
+ *  - Copy constructor
+ *  - Copy assignment operator
+ *  - Destructor
+ */
 class	Fixed
 {
 	public:
@@ -28,20 +40,15 @@ class	Fixed
 		static const int	_fractionalBits = 8;
 };
 
-/**
- * Overload of the << operator.
- *
- * Allows printing a Fixed object using:
- *      std::cout << obj;
- *
- * Syntax breakdown:
- *  - Returns std::ostream& so we can chain outputs (cout << a << b)
- *  - First argument: the output stream (cout)
- *  - Second argument: the Fixed object to print, passed as a const reference
- *  - Must be a free function because the left operand (ostream) is not Fixed
- *
- * The implementation must print the floating-point representation
- * by calling obj.toFloat().
- */
+/*
+** Stream insertion operator overload.
+**
+** Allows a Fixed object to be printed using standard output streams:
+**     std::cout << fixed;
+**
+** The value is printed as its floating-point representation.
+**
+** This function is non-member because the left operand is an std::ostream.
+*/
 std::ostream&	operator<<(std::ostream &out, const Fixed &obj);
 #endif

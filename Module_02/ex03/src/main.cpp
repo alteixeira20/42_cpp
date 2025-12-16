@@ -1,41 +1,40 @@
 #include <iostream>
-#include "Point.hpp"
 #include <cstdlib>
+#include "Point.hpp"
 
 /*
-	NOTE:
-	You may change these coordinates when testing different shapes,
-	but the default triangle is:
-
-	    A = (0, 0)
-	    B = (10, 0)
-	    C = (5, 10)
-
-	This forms an isosceles triangle centered at x = 5.
-*/
+ * Triangle:
+ *
+ *      C (5, 10)
+ *        /\
+ *       /  \
+ *      /    \
+ * A (0,0)----B (10,0)
+ */
 
 int	main(int ac, char **av)
 {
-	float	x;
-	float	y;
-
 	if (ac != 3)
 	{
-		std::cout << "Usage: ./bsp <x> <y>\n";
+		std::cout << "Usage: ./bsp <x> <y>" << std::endl;
+		std::cout << "Example: ./bsp 5 5" << std::endl;
 		return (1);
 	}
-	
-	x = std::atof(av[1]);
-	y = std::atof(av[2]);
 
-	Point	A(0.0f, 0.0f);
-	Point	B(10.0f, 0.0f);
-	Point	C(5.0f, 10.0f);
+	float	x = std::atof(av[1]);
+	float	y = std::atof(av[2]);
 
+	Point	A(0, 0);
+	Point	B(10, 0);
+	Point	C(5, 10);
 	Point	P(x, y);
 
-	bool	result = bsp(A, B, C, P);
-	std::cout << std::boolalpha << result << std::endl;
-	
+	std::cout << "Point (" << x << ", " << y << "): ";
+
+	if (bsp(A, B, C, P))
+		std::cout << "inside triangle" << std::endl;
+	else
+		std::cout << "outside triangle" << std::endl;
+
 	return (0);
 }

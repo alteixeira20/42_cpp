@@ -8,96 +8,72 @@
 </p>
 
 <h1 align="center">Module 01 — Memory, References, and Control Flow</h1>
-<p align="center">Dynamic allocation, pointer vs reference discipline, file streams, and controlled branching in C++98.</p>
+<p align="center">Stack vs heap choices, references vs pointers, file streams, and control-flow tables—with the same stream discipline from Module 00.</p>
 
-## Table of Contents
-1. [At a Glance](#at-a-glance)
-2. [Learning Objectives](#learning-objectives)
-3. [Key Concepts to Review](#key-concepts-to-review)
-4. [Exercises Overview](#exercises-overview)
-5. [Implementation Notes per Exercise](#implementation-notes-per-exercise)
-6. [Rules & Constraints](#rules--constraints)
-7. [Approach & Tips](#approach--tips)
-8. [What to Deliver](#what-to-deliver)
-9. [Looking Ahead](#looking-ahead)
+## Where We’re Coming From (Module 00 recap)
+- Still on C++98 streams, no `using namespace`, no STL containers.
+- Keep classes small with clear ctors/dtors; `const` where state shouldn’t change.
 
-## At a Glance
-> **Highlights:** Apply C++ object semantics to memory, ownership, and branching.
-- Contrast stack vs heap allocation with explicit constructors/destructors.
-- Use references and pointers intentionally (aliases vs nullable indirections).
-- Manipulate strings and files via streams instead of C stdio.
-- Exercise structured control flow with member-function pointers and switch.
+## New in Module 01
+- Stack vs heap lifetimes (`new/delete`, arrays with `delete[]`).
+- References (always bound) vs pointers (nullable, reassigned).
+- File streams (`std::ifstream`/`std::ofstream`) and string search/replace loops.
+- Dispatch without if/else forests: member-function pointer tables and switch+fallthrough.
 
-## Learning Objectives
-> **Goal:** Be comfortable choosing allocation strategies, passing by ref/pointer, and using streams.
-- Allocate, initialize, and destroy arrays of objects without leaks.
-- Use references for mandatory ownership and pointers for optional/late binding.
-- Work with `std::ifstream`/`std::ofstream` to read/write files safely.
-- Replace nested conditionals with function-pointer tables or switch-driven flows.
-- Format output with `std::cout` and manipulators, keeping C++98 compliance.
+## Exercises (as implemented here)
+- **ex00 – BraiiiiiiinnnzzzZ** (`Module_01/ex00/src`): `newZombie` allocates on the heap and logs creation; `randomChump` builds on the stack; ctor/dtor print bite/death so lifetime is visible.
+- **ex01 – Moar brainz!** (`Module_01/ex01/src`): `zombieHorde` default-constructs an array, then `setName` for each. Main spawns 42 zombies, announces all, `delete[]` cleans up.
+- **ex02 – HI THIS IS BRAIN** (`Module_01/ex02/src/main.cpp`): Prints addresses and values for a string variable, a pointer to it, and a reference alias—showing same storage, different syntax.
+- **ex03 – Unnecessary violence** (`Module_01/ex03/src`): `Weapon` uses init-list; `HumanA` stores a `Weapon&` (must be armed at construction), `HumanB` stores a nullable `Weapon*` and prints “has no weapon!” when empty. Weapon type mutations propagate to both.
+- **ex04 – Sed is for losers** (`Module_01/ex04/src/main.cpp`): Reads the whole file (appends `\n` per input line), rejects empty search string or empty file, replaces all occurrences with `find`/`erase`/`insert`, writes `<filename>.replace`.
+- **ex05 – Harl 2.0** (`Module_01/ex05/src/Harl.cpp`): Parallel arrays of level strings and member-function pointers; `complain` runs the first matching handler; invalid level does nothing. Messages use the bacon text from the subject.
+- **ex06 – Harl filter** (`Module_01/ex06/src/Harl.cpp`): Maps level to an index, then `switch` plus labeled fallthrough (`goto`) to print from that level up to ERROR. Unknown level prints `[ Probably complaining about insignificant problems ]`.
 
-## Key Concepts to Review
-> **Refresh before coding.**
-- Stack vs heap lifetimes; `new`/`delete` vs automatic objects.
-- Constructors, destructors, and initialization lists.
-- Pointer basics (`nullptr` is not available in C++98, use `NULL`) vs references (non-null, must bind on init).
-- Member function pointers syntax: `&Class::method` and `(instance->*fn)()`.
-- File streams: `std::getline`, `is_open`, writing to new files, `.c_str()` when needed.
-- `std::string` operations: `find`, `erase`, `insert`, length, and empty checks.
-- Switch statement and fallthrough (or explicit cascades) for filtered logging.
+## Build & Run
+- Always compile with `c++ -Wall -Wextra -Werror -std=c++98`.
+- Each exercise has its own `Makefile`: e.g., `make -C ex04 && ./ex04/op_sed input s1 s2`.
 
-## Exercises Overview
-> **What you build and why.**
+## Notes & Pitfalls
+- `nullptr` isn’t available in C++98; use `NULL` where needed (see `HumanB`).
+- When allocating arrays (`new T[n]`), ensure a default ctor exists and pair with `delete[]` (done in `ex01`).
+- In `ex04`, because a newline is appended per `getline`, output will always end with at least one trailing newline.
+- `ex05` ignores unknown levels silently; `ex06` reports unknown levels with the neutral message.
 
-| Exercise | Purpose | Focus |
-| :------: | ------- | ----- |
-| `ex00` BraiiiiiiinnnzzzZ | Compare heap vs stack zombies and constructor/destructor traces. | Dynamic vs automatic allocation, simple class. |
-| `ex01` Moar brainz! | Build a horde of zombies in one allocation. | Arrays of objects, default ctor + setter. |
-| `ex02` HI THIS IS BRAIN | Contrast pointer and reference to the same string. | Address/value printing, aliasing semantics. |
-| `ex03` Unnecessary violence | Share a `Weapon` between humans with ref vs pointer ownership. | Initialization lists, nullable pointers, const refs. |
-| `ex04` Sed is for losers | Reimplement `sed`-style replace into `<file>.replace`. | File streams, string search/replace loop. |
-| `ex05` Harl 2.0 | Map log levels to handlers via member-function pointers. | Lookup tables, dispatch without if/else chains. |
-| `ex06` Harl filter | Filter logs by minimum level using switch cascade. | Switch, fallthrough via labels, CLI argument handling. |
+## Chain to Next Module
+- Module 02 builds on these ownership choices and pushes you into Orthodox Canonical Form and operator overloading; keep the pointer/reference discipline in mind.
 
-## Implementation Notes per Exercise
-> **How the solutions behave in this repo.**
-- **ex00:** `newZombie` allocates on the heap and returns a pointer; `randomChump` creates a stack zombie and announces immediately. Constructors/destructors print who was bitten or died, making lifetime visible.
-- **ex01:** `zombieHorde` allocates `Zombie[n]` with the default constructor, then assigns names via `setName`. `main` spawns 42 zombies, announces each, and cleans up with `delete[]`.
-- **ex02:** Demonstrates a string variable, a pointer to it, and a reference alias. Prints addresses and values to show identical storage but different access syntax.
-- **ex03:** `Weapon` stores type with an init list; `HumanA` holds a `Weapon&` (must be armed at construction), while `HumanB` keeps a nullable `Weapon*` set later. Attacks print the current weapon type; mutable type propagates through shared references/pointers.
-- **ex04:** Reads the whole file into a string, replaces all occurrences of `s1` with `s2` using `find`/`erase`/`insert`, then writes to `<filename>.replace`. Guards missing args, empty search string, and file open failures.
-- **ex05:** `Harl` initializes parallel arrays of level strings and member-function pointers; `complain` finds the index and invokes the matching handler, otherwise no-op. Tests call each level plus an invalid one.
-- **ex06:** CLI expects one level; maps it to an index and uses `switch` with labeled fallthrough to print from that level up to ERROR. Unknown levels print the neutral message. Uses `goto` labels to simulate intentional fallthrough in C++98.
-
-## Rules & Constraints
-> **Non-negotiables from the subject.**
-- Compiler: `c++` with `-Wall -Wextra -Werror` and compatible with `-std=c++98`.
-- Forbidden: `printf`/`malloc`/`free`, external libs, `using namespace` and `friend`.
-- STL containers/algorithms remain off-limits until Module 08.
-- Headers must have include guards and be self-sufficient; implementation stays in `.cpp`.
-
-## Approach & Tips
-> **Stay efficient and evaluator-friendly.**
-- Prefer initialization lists for member setup (`Weapon`, `HumanA`); avoids double init.
-- Decide pointer vs reference by ownership semantics: nullable/later assignment ⇒ pointer; mandatory/always-valid ⇒ reference.
-- When allocating arrays (`new T[n]`), ensure a default constructor exists and pair with `delete[]`.
-- For replace logic, advance the search index by the replacement length to avoid infinite loops on overlapping patterns.
-- Use member-function pointer tables (ex05) to avoid repetitive conditionals; store both the string keys and function pointers side by side.
-- In switch-based filtering (ex06), be explicit about fallthrough; labels keep intent readable in C++98.
-
-## What to Deliver
-> **Turn-in checklist per exercise.**
-- `ex00`: `Makefile`, `Zombie.cpp`, `Zombie.hpp`, `newZombie.cpp`, `randomChump.cpp`, `main.cpp`.
-- `ex01`: `Makefile`, `Zombie.cpp`, `Zombie.hpp`, `zombieHorde.cpp`, `main.cpp`.
-- `ex02`: `Makefile`, `main.cpp`.
-- `ex03`: `Makefile`, `Weapon.*`, `HumanA.*`, `HumanB.*`, `main.cpp`.
-- `ex04`: `Makefile`, `main.cpp` (plus any test files you create, e.g., `test.txt`).
-- `ex05`: `Makefile`, `Harl.*`, `main.cpp`.
-- `ex06`: `Makefile`, `Harl.*`, `main.cpp`.
-
-## Looking Ahead
-> **How this sets up later modules.**
-- Reinforces memory ownership choices before classes get richer (Module 02 Canonical Form).
-- Builds comfort with references/pointers crucial for inheritance and polymorphism (Module 03–04).
-- File/string handling patterns resurface in parsing-heavy later modules.
-- Dispatch patterns (function pointers, switch) inform cleaner control flow when exceptions arrive in Module 05.
+## Snippets from This Repo
+- Heap vs stack creation (ex00):
+```cpp
+heapZombie = newZombie("HeapZombie");
+randomChump("StackZombie");
+```
+- `HumanB` nullable weapon (ex03):
+```cpp
+if (_weapon)
+    std::cout << _name << " attacks with their " << _weapon->getType() << std::endl;
+else
+    std::cout << _name << " has no weapon!" << std::endl;
+```
+- Sed replace loop (ex04):
+```cpp
+while ((pos = content.find(search, pos)) != std::string::npos) {
+    content.erase(pos, search.length());
+    content.insert(pos, replace);
+    pos += replace.length();
+}
+```
+- Member-function pointer table (ex05):
+```cpp
+_levels[0] = "DEBUG"; _funcs[0] = &Harl::debug;
+...
+if (_levels[i] == level) { (this->*_funcs[i])(); return; }
+```
+- Switch + labeled fallthrough (ex06):
+```cpp
+switch (index) {
+    case 0: debug(); goto info_label;
+    case 1: info_label: info(); goto warning_label;
+    ...
+}
+```

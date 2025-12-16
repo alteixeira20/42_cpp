@@ -12,7 +12,7 @@ SRC		= $(SRC_DIR)/Fixed.cpp
 SRC		+= $(SRC_DIR)/main.cpp
 
 # Object Files
-OBJS		= $(SRC:$(SRC_DIR)/%.c=$(OBJ_DIR)/%.o)
+OBJS		= $(SRC:$(SRC_DIR)/%.cpp=$(OBJ_DIR)/%.o)
 
 # Compiler & Flags
 COMPILER	= c++
