@@ -183,14 +183,14 @@ Fixed	Fixed::operator/(const Fixed &other) const
 /* Prefix increment. */
 Fixed&	Fixed::operator++()
 {
-	_value += (1 << _fractionalBits);
+	this->_value++;
 	return (*this);
 }
 
 /* Prefix decrement. */
 Fixed&	Fixed::operator--()
 {
-	_value -= (1 << _fractionalBits);
+	this->_value--;
 	return (*this);
 }
 
@@ -199,7 +199,7 @@ Fixed	Fixed::operator++(int)
 {
 	Fixed	tmp(*this);
 
-	_value += (1 << _fractionalBits);
+	this->_value++;
 	return (tmp);
 }
 
@@ -208,7 +208,7 @@ Fixed	Fixed::operator--(int)
 {
 	Fixed	tmp(*this);
 
-	_value -= (1 << _fractionalBits);
+	this->_value--;
 	return (tmp);
 }
 
