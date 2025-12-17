@@ -3,6 +3,11 @@
 
 #include "AMateria.hpp"
 
+/*
+ * Ice materia
+ *
+ * Creates the "ice" type, clones itself, and applies the ice bolt effect in use().
+ */
 class	Ice: public AMateria
 {
 	public:

@@ -1,41 +1,38 @@
 #include "Brain.hpp"
 
 
-// Default Constructor
+/*
+ * Default constructor.
+ * Initializes an empty Brain.
+ */
 Brain::Brain()
 {
 	std::cout << "Brain default constructor called" << std::endl;
 }
 
-// Copy Constructor
+/*
+ * Copy constructor.
+ * Copies all 100 ideas from another Brain.
+ */
 Brain::Brain(const Brain &other)
 {
-	int	i;
-
 	std::cout << "Brain copy constructor called" << std::endl;
-	i = 0;
-	while (i < 100)
-	{
+	for (int i = 0; i < 100; i++)
 		ideas[i] = other.ideas[i];
-		i++;
-	}
 }
 
-// Copy Assignment
+/*
+ * Copy assignment operator.
+ * Replaces this Brain's ideas with another's.
+ */
 Brain	&Brain::operator=(const Brain &other)
 {
-	int	i;
-
-	std::cout << "Copy Assignment Operator called -" << std::endl;
+	std::cout << "Brain copy assignment operator called" << std::endl;
 
 	if (this != &other)
 	{
-		i = 0;
-		while (i < 100)
-		{
+		for (int i = 0; i < 100; i++)
 			ideas[i] = other.ideas[i];
-			i++;
-		}
 	}
 	return (*this);
 }
@@ -60,4 +57,3 @@ void Brain::setIdea(int index, const std::string &idea)
 		return;
 	ideas[index] = idea;
 }
-

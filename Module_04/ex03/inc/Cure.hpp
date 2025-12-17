@@ -3,6 +3,11 @@
 
 #include "AMateria.hpp"
 
+/*
+ * Cure materia
+ *
+ * Creates the "cure" type, clones itself, and applies the healing effect in use().
+ */
 class	Cure: public AMateria
 {
 	public:

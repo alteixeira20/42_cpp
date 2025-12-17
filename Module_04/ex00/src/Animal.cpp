@@ -1,53 +1,69 @@
 #include "Animal.hpp"
 
-// Default Constructor
+/*
+ * Default constructor.
+ * Initializes the Animal with a generic type.
+ */
 Animal::Animal()
 	: _type("Animal")
 {
-	std::cout << "Constructor called - " << _type << std::endl;
+	std::cout << "Animal default constructor called" << std::endl;
 }
 
-// Copy Constructor
+/*
+ * Constructor with type.
+ * Allows derived classes to set their own type.
+ */
+Animal::Animal(const std::string &type)
+	: _type(type)
+{
+	std::cout << "Animal constructor called for type: "
+		<< _type << std::endl;
+}
+
+/*
+ * Copy constructor.
+ * Creates a copy of another Animal.
+ */
 Animal::Animal(const Animal &other)
 	: _type(other._type)
 {
-	std::cout << "Copy Constructor called - Animal" << std::endl;
+	std::cout << "Animal copy constructor called" << std::endl;
 }
 
-// Copy Assignment
+/*
+ * Copy assignment operator.
+ * Assigns the state of another Animal.
+ */
 Animal	&Animal::operator=(const Animal &other)
 {
-	std::cout << "Copy Assignment Operator called - Animal" << std::endl;
+	std::cout << "Animal copy assignment operator called" << std::endl;
 
 	if (this != &other)
-		this->_type = other._type;
+		_type = other._type;
 
 	return (*this);
 }
 
-// Type Constructor
-Animal::Animal(const std::string &type)
-	: _type(type)
-{
-	std::cout << "Constructor called for "
-		<< _type
-		<< " - Animal"
-		<< std::endl;
-}
-
-// Destructor
+/*
+ * Virtual destructor.
+ * Required for proper cleanup through base class pointers.
+ */
 Animal::~Animal()
 {
-	std::cout << "Destructor called - Animal" << std::endl;
+	std::cout << "Animal destructor called" << std::endl;
 }
 
-// Getter
+/* Returns the type of the animal */
 std::string	Animal::getType() const
 {
 	return (_type);
 }
 
-// Make Sound
+/*
+ * Default sound behavior.
+ * Intended to be overridden by derived classes.
+ */
 void	Animal::makeSound() const
 {
 	std::cout << "Animal makes a generic sound." << std::endl;

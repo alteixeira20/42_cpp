@@ -1,25 +1,34 @@
 #include "Dog.hpp"
 
-// Default Constructor
+/*
+ * Default constructor.
+ * Sets type to "Dog" and allocates a fresh Brain.
+ */
 Dog::Dog()
 	: Animal("Dog")
 {
 	_brain = new Brain();
-	std::cout << "Constructor called - Dog" << std::endl;
+	std::cout << "Dog default constructor called" << std::endl;
 }
 
-// Copy Constructor
+/*
+ * Copy constructor.
+ * Deep-copies the Brain from another Dog.
+ */
 Dog::Dog(const Dog &other)
 	: Animal(other)
 {
-	std::cout << "Copy Constructor called - Dog" << std::endl;
+	std::cout << "Dog copy constructor called" << std::endl;
 	_brain = new Brain(*other._brain);
 }
 
-// Copy Assignment
+/*
+ * Copy assignment operator.
+ * Deletes current Brain and deep-copies from the source Dog.
+ */
 Dog	&Dog::operator=(const Dog &other)
 {
-	std::cout << "Copy Assignment Operator called - Dog" << std::endl;
+	std::cout << "Dog copy assignment operator called" << std::endl;
 
 	if (this != &other)
 	{
@@ -30,20 +39,23 @@ Dog	&Dog::operator=(const Dog &other)
 	return (*this);
 }
 
-// Destructor
+/*
+ * Destructor.
+ * Releases the owned Brain.
+ */
 Dog::~Dog()
 {
-	std::cout << "Destructor called - Dog" << std::endl;
+	std::cout << "Dog destructor called" << std::endl;
 	delete _brain;
 }
 
-// Make Sound
+/* Dog-specific sound. */
 void	Dog::makeSound() const
 {
 	std::cout << "Dog starts to Bark!" << std::endl;
 }
 
-// Getter
+/* Exposes the owned Brain pointer. */
 Brain	*Dog::getBrain(void) const
 {
 	return (_brain);

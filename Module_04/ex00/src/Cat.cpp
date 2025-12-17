@@ -1,23 +1,32 @@
 #include "Cat.hpp"
 
-// Default Constructor
+/*
+ * Default constructor.
+ * Initializes the Cat and sets its type to "Cat".
+ */
 Cat::Cat()
 	: Animal("Cat")
 {
-	std::cout << "Constructor called - Cat" << std::endl;
+	std::cout << "Cat default constructor called" << std::endl;
 }
 
-// Copy Constructor
+/*
+ * Copy constructor.
+ * Creates a Cat by copying another Cat.
+ */
 Cat::Cat(const Cat &other)
 	: Animal(other)
 {
-	std::cout << "Copy Constructor called - Cat" << std::endl;
+	std::cout << "Cat copy constructor called" << std::endl;
 }
 
-// Copy Assignment
+/*
+ * Copy assignment operator.
+ * Assigns the state of another Cat.
+ */
 Cat	&Cat::operator=(const Cat &other)
 {
-	std::cout << "Copy Assignment Operator called - Cat" << std::endl;
+	std::cout << "Cat copy assignment operator called" << std::endl;
 
 	if (this != &other)
 		Animal::operator=(other);
@@ -25,14 +34,20 @@ Cat	&Cat::operator=(const Cat &other)
 	return (*this);
 }
 
-// Destructor
+/*
+ * Destructor.
+ * Called when a Cat object is destroyed.
+ */
 Cat::~Cat()
 {
-	std::cout << "Destructor called - Cat" << std::endl;
+	std::cout << "Cat destructor called" << std::endl;
 }
 
-// Make Sound
+/*
+ * Overrides Animal::makeSound().
+ * Outputs the Cat-specific sound.
+ */
 void	Cat::makeSound() const
 {
-	std::cout << "Cat starts to Meow!" << std::endl;
+	std::cout << "Cat says: Meow!" << std::endl;
 }

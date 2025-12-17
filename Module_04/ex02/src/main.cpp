@@ -3,55 +3,42 @@
 #include "Cat.hpp"
 #include "Tester.hpp"
 
-static void	test_full_pipeline(int count)
-{
-	test_polymorphism(count);
-	test_deepcopy_dog();
-	test_deepcopy_cat();
-	test_wrong_polymorphism();
-}
-
 int	main(void)
 {
-	int	option;
-	int	count;
+	const int	count = 6;
 
-	std::cout << "=== Animal Tester ===" << std::endl;
-	std::cout << "1) Polymorphism test" << std::endl;
-	std::cout << "2) Deep copy test (Dog)" << std::endl;
-	std::cout << "3) Deep copy test (Cat)" << std::endl;
-	std::cout << "4) Wrong Polymorphism test" << std::endl;
-	std::cout << "5) Full pipeline" << std::endl;
-	std::cout << "6) Exit" << std::endl;
+	std::cout << "=== Animal Tests (Abstract Base) ===" << std::endl;
 
-	std::cout << "Choose option: ";
-	std::cin >> option;
+	/*
+	 * 1. Polymorphism through abstract base pointers
+	 *
++	 * Builds an array of Animals (half Dogs, half Cats), calls makeSound()
++	 * on each, and deletes via base pointers to verify virtual destructors.
+	 */
+	test_polymorphism(count);
 
-	if (option == 6)
-		return 0;
+	/*
+	 * 2. Deep copy (Dog)
+	 *
+	 * Confirms Dog owns its Brain deeply across copy construction and scope exit.
+	 */
+	test_deepcopy_dog();
 
-	if (option != 4)
-	{
-		std::cout << "How many animals? ";
-		std::cin >> count;
-		if (count <= 0 || count > 100)
-		{
-			std::cout << "Number must be between 1 and 100" << std::endl;
-			return 1;
-		}
-	}
-	if (option == 1)
-		test_polymorphism(count);
-	else if (option == 2)
-		test_deepcopy_dog();
-	else if (option == 3)
-		test_deepcopy_cat();
-	else if (option == 4)
-		test_wrong_polymorphism();
-	else if (option == 5)
-		test_full_pipeline(count);
+	/*
+	 * 3. Deep copy (Cat)
+	 *
+	 * Same deep-copy verification for Cat.
+	 */
+	test_deepcopy_cat();
+
+	/*
+	 * 4. Wrong hierarchy (no virtuals)
+	 *
+	 * Demonstrates that replacing Animal/Cat with WrongAnimal/WrongCat
+	 * produces static binding (WrongAnimal sound).
+	 */
+	test_wrong_polymorphism();
 
 	std::cout << "\n=== End of Tests ===" << std::endl;
-	return 0;
+	return (0);
 }
-

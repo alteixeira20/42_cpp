@@ -1,26 +1,34 @@
 #include "Cat.hpp"
 
-// Default Constructor
+/*
+ * Default constructor.
+ * Sets type to "Cat" and allocates a fresh Brain.
+ */
 Cat::Cat()
 	: Animal("Cat")
 {
 	_brain = new Brain();
-	
-	std::cout << "Constructor called - Cat" << std::endl;
+	std::cout << "Cat default constructor called" << std::endl;
 }
 
-// Copy Constructor
+/*
+ * Copy constructor.
+ * Deep-copies the Brain from another Cat.
+ */
 Cat::Cat(const Cat &other)
 	: Animal(other)
 {
-	std::cout << "Copy Constructor called - Cat" << std::endl;
+	std::cout << "Cat copy constructor called" << std::endl;
 	_brain = new Brain(*other._brain);
 }
 
-// Copy Assignment
+/*
+ * Copy assignment operator.
+ * Deletes current Brain and deep-copies from the source Cat.
+ */
 Cat	&Cat::operator=(const Cat &other)
 {
-	std::cout << "Copy Assignment Operator called - Cat" << std::endl;
+	std::cout << "Cat copy assignment operator called" << std::endl;
 
 	if (this != &other)
 	{
@@ -32,20 +40,23 @@ Cat	&Cat::operator=(const Cat &other)
 	return (*this);
 }
 
-// Destructor
+/*
+ * Destructor.
+ * Releases the owned Brain.
+ */
 Cat::~Cat()
 {
-	std::cout << "Destructor called - Cat" << std::endl;
+	std::cout << "Cat destructor called" << std::endl;
 	delete _brain;
 }
 
-// Make Sound
+/* Cat-specific sound. */
 void	Cat::makeSound() const
 {
 	std::cout << "Cat starts to Meow!" << std::endl;
 }
 
-// Getter
+/* Exposes the owned Brain pointer. */
 Brain	*Cat::getBrain(void) const
 {
 	return (_brain);

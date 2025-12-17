@@ -3,6 +3,11 @@
 
 #include "Animal.hpp"
 
+/*
+ * Concrete Animal: Cat
+ *
+ * Represents a specific Animal that overrides makeSound().
+ */
 class	Cat: public Animal
 {
 	public:

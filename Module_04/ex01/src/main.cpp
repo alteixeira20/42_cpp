@@ -3,50 +3,36 @@
 #include "Cat.hpp"
 #include "Tester.hpp"
 
-static void	test_full_pipeline(int count)
-{
-	test_polymorphism(count);
-	test_deepcopy_dog();
-	test_deepcopy_cat();
-}
-
 int	main(void)
 {
-	int	option;
-	int	count;
+	const int	count = 6;
 
-	std::cout << "=== Animal Tester ===" << std::endl;
-	std::cout << "1) Polymorphism test" << std::endl;
-	std::cout << "2) Deep copy test (Dog)" << std::endl;
-	std::cout << "3) Deep copy test (Cat)" << std::endl;
-	std::cout << "4) Full pipeline" << std::endl;
-	std::cout << "5) Exit" << std::endl;
+	std::cout << "=== Animal Tests ===" << std::endl;
 
-	std::cout << "Choose option: ";
-	std::cin >> option;
+	/*
+	 * 1. Polymorphism through base pointers
+	 *
++	 * Builds an array of Animals (half Dogs, half Cats), calls makeSound()
++	 * on each, and deletes via base pointers to verify virtual destructors.
+	 */
+	test_polymorphism(count);
 
-	if (option == 5)
-		return 0;
+	/*
+	 * 2. Deep copy (Dog)
+	 *
+	 * Fills a Dog's Brain, copies it, mutates the copy, and confirms
+	 * the original Brain stays unchanged after the copy dies.
+	 */
+	test_deepcopy_dog();
 
-	std::cout << "How many animals? ";
-	std::cin >> count;
-
-	if (count <= 0 || count > 100)
-	{
-		std::cout << "Number must be between 1 and 100" << std::endl;
-		return 1;
-	}
-
-	if (option == 1)
-		test_polymorphism(count);
-	else if (option == 2)
-		test_deepcopy_dog();
-	else if (option == 3)
-		test_deepcopy_cat();
-	else if (option == 4)
-		test_full_pipeline(count);
+	/*
+	 * 3. Deep copy (Cat)
+	 *
+	 * Mirrors the Dog test to ensure Cat also performs deep copies
+	 * of its Brain storage.
+	 */
+	test_deepcopy_cat();
 
 	std::cout << "\n=== End of Tests ===" << std::endl;
-	return 0;
+	return (0);
 }
-
