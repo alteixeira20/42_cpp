@@ -23,7 +23,7 @@ SRC		= $(SRC_DIR)/megaphone.cpp
 OBJS		= $(SRC:$(SRC_DIR)/%.cpp=$(OBJ_DIR)/%.o)
 
 # Compiler & Flags
-COMPILER	= c++
+COMPILER	= clang++
 CFLAGS		= -Wall -Wextra -Werror -g -std=c++98
 
 # Build Rules
