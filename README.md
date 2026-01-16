@@ -17,7 +17,7 @@
 4. [Workflow & Usage](#workflow--usage)
 5. [Core Skills](#core-skills)
 6. [Tooling & Standards](#tooling--standards)
-7. [Evaluation Notes](#evaluation-notes)
+7. [Module Notes](#module-notes)
 8. [Credits](#credits)
 
 ## At a Glance
@@ -29,6 +29,7 @@
 
 ## Modules & Scope
 > **Highlights:** What each module teaches and where to find it.
+- Each module link opens its folder README for detailed goals, concepts, and notes.
 
 <div align="center">
 
@@ -55,8 +56,8 @@
 ## Workflow & Usage
 > **Highlights:** How to approach each module without surprises.
 - Start with the module README to capture rules (C++98, forbidden functions, STL restrictions before Module 08).
-- Follow module guidance for build targets, usage examples, and evaluator tips.
-- Work one module at a time to mirror 42’s evaluation flow; keep artifacts inside the matching `Module_XX/`.
+- Follow module guidance for build targets, usage examples, and test notes.
+- Work one module at a time and keep artifacts inside the matching `Module_XX/`.
 - Use provided Makefiles or add your own per module; compile with `-Wall -Wextra -Werror` and C++98 mode.
 
 ## Core Skills
@@ -73,8 +74,8 @@
 - Orthodox Canonical Form from Module 02 onward unless explicitly exempted.
 - Clean builds and memory hygiene are mandatory; leak checks encouraged (Valgrind/GDB side helpers).
 
-## Evaluation Notes
-> **Highlights:** What peers and recruiters should expect when opening a module.
+## Module Notes
+> **Highlights:** What to expect when opening a module.
 - Constructors/destructors are verbose for traceability; many exercises require printed lifecycle messages.
 - Module READMEs map code structure to subject requirements, call out edge cases, and include tester notes when relevant.
 - Tests live per module; expect iterator-range adders, exception branches, and deep-copy checks where applicable.
