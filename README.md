@@ -79,8 +79,3 @@
 - Constructors/destructors are verbose for traceability; many exercises require printed lifecycle messages.
 - Module READMEs map code structure to subject requirements, call out edge cases, and include tester notes when relevant.
 - Tests live per module; expect iterator-range adders, exception branches, and deep-copy checks where applicable.
-
-## Credits
-> **Highlights:** Ownership and contact.
-- Built and maintained by Alexandre Teixeira (`alteixeira20`) during the 42 Porto C++ curriculum.
-- Feedback or suggestions? Open the relevant module README for contribution notes once that module’s README is published.
