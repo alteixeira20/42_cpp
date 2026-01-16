@@ -22,7 +22,8 @@ static void	self_assignment(Fixed &a)
 	std::cout << "\n=== Self-assignment ===" << std::endl;
 	a.setRawBits(42);
 	print_state("a (before)", a);
-	a = a;
+	Fixed	&alias = a;
+	a = alias;
 	print_state("a (after)", a); 
 }
 

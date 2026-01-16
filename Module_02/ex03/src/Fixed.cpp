@@ -3,15 +3,13 @@
 /*
  * Default constructor.
  * Initializes the fixed-point value to zero.
- */
+*/
 Fixed::Fixed()
 	: _value(0)
 {
 }
 
-/*
- * Destructor.
- */
+/* Destructor. */
 Fixed::~Fixed()
 {
 }
@@ -69,7 +67,7 @@ int	Fixed::toInt() const
 	return (_value >> _fractionalBits);
 }
 
-/* * Returns the raw fixed-point value. */
+/* Returns the raw fixed-point value. */
 int	Fixed::getRawBits() const
 {
 	return (_value);
@@ -82,9 +80,9 @@ void	Fixed::setRawBits(int const raw)
 }
 
 /*
- * Stream insertion operator.
- * Outputs the fixed-point value as a floating-point number.
- */
+** Stream insertion operator.
+** Outputs the fixed-point value as a floating-point number.
+*/
 std::ostream&	operator<<(std::ostream &out, const Fixed &obj)
 {
 	out << obj.toFloat();
@@ -185,14 +183,14 @@ Fixed	Fixed::operator/(const Fixed &other) const
 /* Prefix increment. */
 Fixed&	Fixed::operator++()
 {
-	_value += (1 << _fractionalBits);
+	this->_value++;
 	return (*this);
 }
 
 /* Prefix decrement. */
 Fixed&	Fixed::operator--()
 {
-	_value -= (1 << _fractionalBits);
+	this->_value--;
 	return (*this);
 }
 
@@ -201,7 +199,7 @@ Fixed	Fixed::operator++(int)
 {
 	Fixed	tmp(*this);
 
-	_value += (1 << _fractionalBits);
+	this->_value++;
 	return (tmp);
 }
 
@@ -210,7 +208,7 @@ Fixed	Fixed::operator--(int)
 {
 	Fixed	tmp(*this);
 
-	_value -= (1 << _fractionalBits);
+	this->_value--;
 	return (tmp);
 }
 
