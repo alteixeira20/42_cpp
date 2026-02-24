@@ -1,0 +1,54 @@
+# Program 
+EXEC	= Forms
+
+# Directories
+SRC_DIR	= src
+INC_DIR	= inc
+OBJ_DIR	= obj
+
+# Source Files
+SRC = $(SRC_DIR)/Bureaucrat.cpp
+SRC += $(SRC_DIR)/AForm.cpp
+SRC += $(SRC_DIR)/ShrubberyCreationForm.cpp
+SRC += $(SRC_DIR)/PresidentialPardonForm.cpp
+SRC += $(SRC_DIR)/RobotomyRequestForm.cpp
+SRC += $(SRC_DIR)/main.cpp
+
+# Object Files (.cpp → .o in obj/)
+OBJS	= $(SRC:$(SRC_DIR)/%.cpp=$(OBJ_DIR)/%.o)
+
+# Compiler & Flags
+COMPILER	= clang++
+CFLAGS		= -Wall -Wextra -Werror -g -std=c++98 -I$(INC_DIR)
+
+# Build Rules
+$(OBJ_DIR)/%.o: $(SRC_DIR)/%.cpp
+	@mkdir -p $(@D)
+	@$(COMPILER) $(CFLAGS) -c $< -o $@
+
+all: $(EXEC)
+
+$(EXEC): $(OBJS)
+	@$(COMPILER) $(CFLAGS) $(OBJS) -o $(EXEC)
+	@echo "$(B)$(EXEC)$(D) compiled $(GRN)successfully$(D)"
+
+# Cleaning Rules
+clean:
+	@rm -rf $(OBJ_DIR) *_shrubbery
+	@echo "$(B)Object files$(RED) removed$(D)"
+
+fclean: clean
+	@rm -f $(EXEC)
+	@echo "$(B)Executable$(RED) removed$(D)"
+
+re: fclean all
+
+# **************************************************************************** #
+#                                 Colors                                        #
+# **************************************************************************** #
+
+B   = $(shell tput bold)
+RED = $(shell tput setaf 1)
+GRN = $(shell tput setaf 2)
+YEL = $(shell tput setaf 3)
+D   = $(shell tput sgr0)
