@@ -1,41 +1,43 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   Bureaucrat.hpp                                     :+:      :+:    :+:   */
+/*   Form.hpp                                           :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: alteixeira20 <paalexan@student.42porto.co  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2026/02/11 13:27:23 by alteixeira20      #+#    #+#             */
-/*   Updated: 2026/02/24 13:45:03 by alteixeira20     ###   ########.fr       */
+/*   Created: 2026/02/24 13:22:07 by alteixeira20      #+#    #+#             */
+/*   Updated: 2026/02/24 15:26:38 by alteixeira20     ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#ifndef BUREAUCRAT_HPP
-# define BUREAUCRAT_HPP
+#ifndef FORM_HPP
+# define FORM_HPP
 
 #include <string>
 #include <ostream>
-#include <iostream>
 #include <exception>
 
-class	Bureaucrat
+class	Bureaucrat;
+
+class	Form
 {
 	public:
 		/* Orthodox Canonical Form */
-		Bureaucrat();
-		Bureaucrat(std::string name, int grade);
-		~Bureaucrat();
+		Form();
+		Form(std::string name, int gradeToSign, int gradeToExecute);
+		~Form();
 
-		Bureaucrat(const Bureaucrat &other);
-		Bureaucrat& operator=(const Bureaucrat &other);
+		Form(const Form &other);
+		Form& operator=(const Form &other);
 
 		/* Accessors */
 		const std::string	getName() const;
-		int			getGrade() const;
+		bool			isSigned() const;
+		int			getGradeToSign() const;
+		int			getGradeToExecute() const;
 		
-		/* Grade Modifiers */
-		void			incrementGrade();
-		void			decrementGrade();
+		/* Signs the form if the bureaucrat's grade is high enough */
+		void			beSigned(const Bureaucrat &bureaucrat);
 
 		/* Exceptions */
 		class	GradeTooHighException: public std::exception
@@ -49,13 +51,20 @@ class	Bureaucrat
 				const char	*what() const throw();
 		};
 	private:
+		/* Immutable identity and requeriments */
 		const std::string	_name;
-		int			_grade;
-		static const int	GRADE_MIN = 150;
-		static const int	GRADE_MAX = 1;
+		const int		_gradeToSign;
+		const int		_gradeToExecute;
+
+		/* Mutable state */
+		bool			_isSigned;
+
+		/* Grade Limits */
+		static const int	GRADE_HIGHEST = 1;
+		static const int	GRADE_LOWEST = 150;
 };
 
 /* Stream insertion operator used for readable printing */
-std::ostream&	operator<<(std::ostream &os, const Bureaucrat &bureaucrat);
+std::ostream&	operator<<(std::ostream &os, const Form &form);
 
 #endif
