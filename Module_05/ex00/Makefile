@@ -14,7 +14,7 @@ SRC += $(SRC_DIR)/main.cpp
 OBJS	= $(SRC:$(SRC_DIR)/%.cpp=$(OBJ_DIR)/%.o)
 
 # Compiler & Flags
-COMPILER	= clang++
+COMPILER	= c++
 CFLAGS		= -Wall -Wextra -Werror -g -std=c++98 -I$(INC_DIR)
 
 # Build Rules
