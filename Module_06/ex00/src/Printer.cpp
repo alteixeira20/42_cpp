@@ -109,7 +109,7 @@ void	printFloat(double value)
 		return ;
 	}
 	f = static_cast<float>(value);
-	if (isIntLike(value))
+	if (isIntLike(f))
 		std::cout << "float: " << std::fixed << std::setprecision(1) << f << "f" << std::endl;
 	else
 		std::cout << "float: " << f << "f" << std::endl;
