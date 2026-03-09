@@ -54,7 +54,6 @@
 | `ex02` Identify real type | Detect whether a generated object is `A`, `B`, or `C`. | `dynamic_cast`, RTTI, polymorphic base behavior. |
 
 ## Implementation Notes per Exercise
-> **How your solutions behave in this repository.**
 - **ex00:** `ScalarConverter` is a non-instantiable utility with a single static `convert()` entry point. Your implementation first classifies the input (`char`, `int`, `float`, `double`, pseudo-literal, or invalid), then parses to `double`, and finally prints each target type with dedicated helpers from `Printer.cpp`. It correctly handles the sample subject cases like `0`, `nan`, and `42.0f`, while reporting `impossible` or `Non displayable` where appropriate.  
   Run: `make -C ex00 && ./ex00/converter 42.0f`
 
@@ -73,12 +72,11 @@
 - `std::typeinfo` is forbidden in `ex02`.
 
 ## Approach & Tips
-> **What matters during implementation and evaluation.**
+> **What matters during implementation.**
 - In `ex00`, separate type detection from output formatting; it keeps overflow and pseudo-literal handling manageable.
 - Use `static_cast` only after you know the source value is valid for the target representation.
 - In `ex01`, remember that serialization here is only about preserving the pointer bit pattern, not cloning pointed-to data.
 - In `ex02`, reference-based `dynamic_cast` throws on failure, so exception control flow is expected.
-- During evaluation, be ready to explain why each exercise uses a different cast family.
 
 ## What to Deliver
 > **Turn-in checklist per exercise.**

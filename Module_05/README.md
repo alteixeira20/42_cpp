@@ -55,7 +55,6 @@
 | `ex03` Intern | Create forms from names at runtime. | Factory mapping, heap ownership, cleaner dispatch. |
 
 ## Implementation Notes per Exercise
-> **How your solutions behave in this repository.**
 - **ex00:** `Bureaucrat` stores a `const` name and mutable grade, rejects invalid grades in the constructor, and throws `GradeTooHighException` / `GradeTooLowException` when crossing limits. The test driver covers normal promotion/demotion, constructor failures, limit failures, and copy/assignment.  
   Run: `make -C ex00 && ./ex00/Bureaucrat`
 
@@ -82,7 +81,7 @@
 - From Module 02 onward, classes are expected to follow Orthodox Canonical Form unless the exercise says otherwise.
 
 ## Approach & Tips
-> **What matters during implementation and evaluation.**
+> **What matters during implementation.**
 - Validate grades immediately in constructors so invalid objects never exist.
 - Keep the exception type aligned with the violated rule: high for `< 1`, low for `> 150`.
 - Put shared execution checks in `AForm::execute()` and keep concrete forms focused on their side effect.
