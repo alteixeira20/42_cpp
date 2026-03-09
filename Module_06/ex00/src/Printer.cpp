@@ -115,8 +115,6 @@ void	printFloat(double value)
 		std::cout << "float: " << f << "f" << std::endl;
 }
 
-
-
 void	printDouble(double value)
 {
 	if (isIntLike(value))
