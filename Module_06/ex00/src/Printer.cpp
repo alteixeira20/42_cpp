@@ -14,8 +14,8 @@
 #include <cctype>
 #include <cstdlib>
 #include <limits>
-#include <iomanip>
 #include <cmath>
+#include <sstream>
 
 void	printInvalid(void)
 {
@@ -84,14 +84,18 @@ void	printInt(double value)
 	std::cout << "int: " << static_cast<int>(value) << std::endl;
 }
 
-static bool isIntLike(double value)
+static std::string	formatDecimal(double value)
 {
-	if (std::isnan(value) || std::isinf(value))
-		return (false);
-	if (value == static_cast<double>(static_cast<long long>(value)))
-		return (true);
-	else
-		return (false);
+	std::ostringstream	out;
+	std::string			text;
+
+	out << value;
+	text = out.str();
+	if (text.find('.') == std::string::npos
+		&& text.find('e') == std::string::npos
+		&& text.find('E') == std::string::npos)
+		text += ".0";
+	return (text);
 }
 
 void	printFloat(double value)
@@ -109,16 +113,10 @@ void	printFloat(double value)
 		return ;
 	}
 	f = static_cast<float>(value);
-	if (isIntLike(f))
-		std::cout << "float: " << std::fixed << std::setprecision(1) << f << "f" << std::endl;
-	else
-		std::cout << "float: " << f << "f" << std::endl;
+	std::cout << "float: " << formatDecimal(static_cast<double>(f)) << "f" << std::endl;
 }
 
 void	printDouble(double value)
 {
-	if (isIntLike(value))
-		std::cout << "double: " << std::fixed << std::setprecision(1) << value << std::endl;
-	else
-		std::cout << "double: " << value << std::endl;
+	std::cout << "double: " << formatDecimal(value) << std::endl;
 }

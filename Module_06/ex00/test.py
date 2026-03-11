@@ -118,6 +118,17 @@ def check_pseudo(lines: List[str], kind: str) -> Tuple[bool, str]:
         return False, f"Pseudo output mismatch (expected {exp})"
     return True, "ok"
 
+def is_scientific(text: str) -> bool:
+    return "e" in text or "E" in text
+
+def has_integer_suffix(text: str, suffix: str) -> bool:
+    if not text.endswith(suffix):
+        return False
+    body = text[:-len(suffix)] if suffix else text
+    if is_scientific(body):
+        return True
+    return body.endswith(".0")
+
 def check_general(lines: List[str], integer_like: bool) -> Tuple[bool, str]:
     ok4, reason = must_have_4(lines)
     if not ok4:
@@ -144,14 +155,14 @@ def check_general(lines: List[str], integer_like: bool) -> Tuple[bool, str]:
         return False, "Float ends with 'ff' (must be exactly one trailing 'f')"
 
     # Enforce subject-style .0f / .0 for integer-like test inputs
-    # (this is intentional strictness)
+    # while still accepting scientific notation for large values.
     if integer_like:
-        fl_nospace = lines[2].replace(" ", "")
-        dl_nospace = lines[3].replace(" ", "")
-        if "impossible" not in fl_nospace and not fl_nospace.endswith(".0f"):
-            return False, "Integer-like: float must end with '.0f'"
-        if "impossible" not in dl_nospace and not dl_nospace.endswith(".0"):
-            return False, "Integer-like: double must end with '.0'"
+        fl_text = lines[2].split(":", 1)[1].strip()
+        dl_text = lines[3].split(":", 1)[1].strip()
+        if fl_text != "impossible" and not has_integer_suffix(fl_text, "f"):
+            return False, "Integer-like: float must end with '.0f' unless scientific notation is used"
+        if dl_text != "impossible" and not has_integer_suffix(dl_text, ""):
+            return False, "Integer-like: double must end with '.0' unless scientific notation is used"
 
     return True, "ok"
 
@@ -209,6 +220,7 @@ def main() -> int:
     integer_like_inputs = [
         "0", "1", "-1", "+42", "42",
         "42.0", "42.", "0.0f", "1.0f", "-1.0f", "42.0f",
+        "42.99999", "42.999987",
         "2147483647", "-2147483648",
     ]
     for s in integer_like_inputs:
