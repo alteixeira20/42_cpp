@@ -6,7 +6,7 @@
 /*   By: alteixeira20 <paalexan@student.42porto.co  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/02/24 13:56:43 by alteixeira20      #+#    #+#             */
-/*   Updated: 2026/02/24 14:58:24 by alteixeira20     ###   ########.fr       */
+/*   Updated: 2026/03/11 10:50:30 by alteixeira20     ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -17,7 +17,6 @@
 Form::Form()
 	: _name("default"), _gradeToSign(42), _gradeToExecute(42), _isSigned(false)
 { 
-	std::cout << "Form default constructor called" << std::endl;
 }
 
 /* Personalized Constructor */

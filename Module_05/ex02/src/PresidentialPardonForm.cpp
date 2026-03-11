@@ -6,7 +6,7 @@
 /*   By: alteixeira20 <paalexan@student.42porto.co  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/02/24 16:21:38 by alteixeira20      #+#    #+#             */
-/*   Updated: 2026/02/24 16:26:34 by alteixeira20     ###   ########.fr       */
+/*   Updated: 2026/03/11 10:51:26 by alteixeira20     ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -15,7 +15,7 @@
 
 /* Default Constructor */
 PresidentialPardonForm::PresidentialPardonForm(const std::string &target)
-	: AForm("PresidentialPardonForm", 25, 5), _target(target)
+	: AForm("presidential pardon", 25, 5), _target(target)
 {
 }
 

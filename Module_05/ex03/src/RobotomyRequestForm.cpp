@@ -6,7 +6,7 @@
 /*   By: alteixeira20 <paalexan@student.42porto.co  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/02/24 16:31:25 by alteixeira20      #+#    #+#             */
-/*   Updated: 2026/02/24 16:44:16 by alteixeira20     ###   ########.fr       */
+/*   Updated: 2026/03/11 10:52:14 by alteixeira20     ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -17,7 +17,7 @@
 
 /* Default Constructor */
 RobotomyRequestForm::RobotomyRequestForm(const std::string &target)
-	: AForm("RobotomyRequestForm", 72, 45), _target(target)
+	: AForm("robotomy request", 72, 45), _target(target)
 {
 }
 

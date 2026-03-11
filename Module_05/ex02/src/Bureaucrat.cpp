@@ -6,7 +6,7 @@
 /*   By: alteixeira20 <paalexan@student.42porto.co  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/02/11 13:41:38 by alteixeira20      #+#    #+#             */
-/*   Updated: 2026/02/24 16:16:37 by alteixeira20     ###   ########.fr       */
+/*   Updated: 2026/03/11 10:51:00 by alteixeira20     ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -17,7 +17,6 @@
 /** Default Constructor **/
 Bureaucrat::Bureaucrat(): _name("default"), _grade(42)
 {
-	std::cout << "Bureaucrat default constructor called" << std::endl;
 }
 
 /** Personalized Constructor **/
@@ -39,8 +38,6 @@ Bureaucrat::Bureaucrat(const Bureaucrat &other)
 /** Destructor **/
 Bureaucrat::~Bureaucrat()
 {
-	std::cout << "Bureaucrat destructor called for " << _name
-		<< " with grade " << _grade << std::endl;
 }
 
 /** Copy Assignment operator **/

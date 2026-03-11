@@ -6,7 +6,7 @@
 /*   By: alteixeira20 <paalexan@student.42porto.co  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/02/11 14:04:08 by alteixeira20      #+#    #+#             */
-/*   Updated: 2026/02/24 18:06:43 by alteixeira20     ###   ########.fr       */
+/*   Updated: 2026/03/11 10:52:10 by alteixeira20     ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -70,15 +70,9 @@ static void	scenarioUnknownForm(Intern &intern, const std::string &formName,
 	AForm	*form;
 
 	form = NULL;
-	try
-	{
-		form = intern.makeForm(formName, target);
+	form = intern.makeForm(formName, target);
+	if (form != NULL)
 		std::cout << "Unexpected: Intern created something." << std::endl;
-	}
-	catch (const std::exception &e)
-	{
-		std::cout << "Caught: " << e.what() << std::endl;
-	}
 	safeDelete(form);
 }
 
@@ -92,6 +86,27 @@ static void	scenarioExecuteWithoutSigning(Intern &intern, const std::string &for
 	{
 		form = intern.makeForm(formName, target);
 		runExecuteWithoutSigning(executor, form);
+	}
+	catch (const std::exception &e)
+	{
+		std::cout << "Caught: " << e.what() << std::endl;
+	}
+	safeDelete(form);
+}
+
+static void	scenarioSignOnly(Intern &intern, const std::string &formName,
+	const std::string &target, Bureaucrat &signer)
+{
+	AForm	*form;
+
+	form = NULL;
+	try
+	{
+		form = intern.makeForm(formName, target);
+		if (form == NULL)
+			return ;
+		std::cout << *form << std::endl;
+		signer.signForm(*form);
 	}
 	catch (const std::exception &e)
 	{
@@ -123,8 +138,7 @@ int	main(void)
 	scenarioExecuteWithoutSigning(intern, "presidential pardon", "Arthur", boss);
 
 	printTitle("Sign grade too low");
-	scenarioCreateAndRun(intern, "presidential pardon", "Trillian",
-		lowSigner, boss, "");
+	scenarioSignOnly(intern, "presidential pardon", "Trillian", lowSigner);
 
 	printTitle("Execute grade too low (after signing)");
 	scenarioCreateAndRun(intern, "robotomy request", "Bender",

@@ -6,7 +6,7 @@
 /*   By: alteixeira20 <paalexan@student.42porto.co  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/02/24 17:53:54 by alteixeira20      #+#    #+#             */
-/*   Updated: 2026/02/24 18:05:57 by alteixeira20     ###   ########.fr       */
+/*   Updated: 2026/03/11 10:52:08 by alteixeira20     ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -81,7 +81,7 @@ AForm*	Intern::makeForm(const std::string &formName, const std::string &target) 
 	}
 	std::cout << "Intern couldn't create " << formName
 		<< " because form name does not exist." << std::endl;
-	throw Intern::FormNotFoundException();
+	return (NULL);
 }
 
 const char	*Intern::FormNotFoundException::what() const throw()

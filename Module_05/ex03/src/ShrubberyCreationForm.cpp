@@ -6,7 +6,7 @@
 /*   By: alteixeira20 <paalexan@student.42porto.co  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/02/24 16:47:44 by alteixeira20      #+#    #+#             */
-/*   Updated: 2026/02/24 16:54:48 by alteixeira20     ###   ########.fr       */
+/*   Updated: 2026/03/11 10:52:16 by alteixeira20     ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -16,7 +16,7 @@
 
 /* Default Constructor */
 ShrubberyCreationForm::ShrubberyCreationForm(const std::string &target)
-	: AForm("ShrubberyCreationForm", 145, 137), _target(target)
+	: AForm("shrubbery creation", 145, 137), _target(target)
 {
 }
 
