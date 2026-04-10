@@ -18,16 +18,18 @@
 #include <ctime>	// std::clouck, CLOCKS_PER_SEC
 #include <climits>	// INT_MAX
 #include <cctype>	// std::is_digit
+#include <iomanip>	// std::setprecision
+#include <sys/time.h>	// gettimeofday
 
 /* Local Helpers */
 
-static long	clockToMicros(std::clock_t ticks)
+static double	getTimeMicros(void)
 {
-	long	microseconds; // microseconds = ticks * 1e6 / CLOCKS_PER_SEC
-	
-	microseconds = ticks * 1000000.L / CLOCKS_PER_SEC;
+	struct timespec	ts;
 
-	return (microseconds);
+	clock_gettime(CLOCK_MONOTONIC, &ts);
+	return (static_cast<double>(ts.tv_sec) * 1000000.0
+		+ static_cast<double>(ts.tv_nsec) / 1000.0);
 }
 
 static bool	isAllDigits(const std::string &str)
@@ -63,23 +65,6 @@ static int	validateAndParse(const std::string &str)
 		throw PmergeMe::Error("Error");
 
 	return (static_cast<int>(val));
-}
-
-static void	fillContainers(int argc, char **argv, std::vector<int> &v, std::deque<int> &d)
-{
-	int	i;
-	int	val;
-
-	i = 1;
-	while (i < argc)
-	{
-		val = validateAndParse(argv[i]);
-		v.push_back(val);
-		d.push_back(val);
-		i++;
-	}
-	if (v.empty())
-		throw PmergeMe::Error("Error");
 }
 
 static void	printSequence(const std::string &label, const std::vector<int> &v)
@@ -122,7 +107,7 @@ PmergeMe::~PmergeMe()
 {
 }
 
-/* Ford-Johnson Algorithm Helpers */
+/* Ford-Johnson Primitives */
 static void	nextJacobsthal(std::size_t &j0, std::size_t &j1)
 {
 	std::size_t	next;
@@ -133,8 +118,8 @@ static void	nextJacobsthal(std::size_t &j0, std::size_t &j1)
 	j1 = next;
 }
 
-template <typename Chain>
-static void	insertFull(Chain &chain, int value)
+template <typename Container>
+static void	binaryInsert(Container &chain, int value)
 {
 	int	left;
 	int	right;
@@ -142,7 +127,6 @@ static void	insertFull(Chain &chain, int value)
 
 	left = 0;
 	right = static_cast<int>(chain.size());
-	// Binary search for correct sorted position
 	while (left < right)
 	{
 		mid = left + (right - left) / 2;
@@ -154,188 +138,297 @@ static void	insertFull(Chain &chain, int value)
 	chain.insert(chain.begin() + left, value);
 }
 
-template <typename Chain, typename Pending>
-static void	insertPending(Chain &chain, Pending &pending)
+/*
+ * Builds the Jacobsthal insertion order for n elements.
+ * Index 0 goes first, then groups are processed in descending order
+ * within each Jacobsthal interval — minimises binary search range.
+ */
+static void	buildJacobsthalOrder(std::vector<std::size_t> &order, std::size_t n)
 {
 	std::size_t	j0;
 	std::size_t	j1;
-	std::size_t	groupEnd;
-	std::size_t	prev;
+	std::size_t	limit;
 	std::size_t	i;
 
-	if (pending.empty())
+	order.clear();
+	if (n == 0)
 		return ;
-
-	// Index 0 always inserted first — costs 0 comparisons
-	insertFull(chain, pending[0]);
-
-	j0 = 1; // J(2)
-	j1 = 3; // J(3)
-	prev = 1;
-
-	// Each iteration processes one Jacobsthal group descending
-	while (prev < pending.size())
+	order.push_back(0);
+	j0 = 1;
+	j1 = 3;
+	while (j0 < n)
 	{
-		groupEnd = (j1 < pending.size() ? j1 : pending.size() - 1);
-		i = groupEnd;
-		while (i >= prev && i < pending.size())
+		limit = j1;
+		if (limit > n)
+			limit = n;
+		i = limit;
+		while (i > j0)
 		{
-			insertFull(chain, pending[i]);
-			if (i == 0) break ;
 			i--;
+			order.push_back(i);
 		}
-		prev = j1 + 1;
 		nextJacobsthal(j0, j1);
 	}
 }
 
-/* Sorting using Ford-Johnson (merge-insertion) for vector & deque */
-
-static void	fordJohnsonSortVector(std::vector<int> &v)
+/*
+ * Inserts all pending elements into chain using Jacobsthal order.
+ * Elements not covered by Jacobsthal groups are appended at the end.
+ */
+template <typename Chain, typename Pending>
+static void	insertPending(Chain &chain, const Pending &pending)
 {
-	if (v.size() <= 1)
-		return ;
+	std::vector<std::size_t>	order;
+	std::vector<bool>		inserted;
+	std::size_t			i;
+	std::size_t			idx;
 
-	// 1) Split into smalls (a) and bigs (b), save straggler if odd
-	std::vector<int>	a;
-	std::vector<int>	b;
-	bool			hasStraggler;
-	int			straggler;
-
-	a.reserve(v.size() / 2);
-	b.reserve(v.size() / 2);
-	hasStraggler = (v.size() % 2 != 0);
-	straggler = hasStraggler ? v.back() : 0;
-
-	for (std::size_t i = 0; i + 1 < v.size(); i += 2)
+	buildJacobsthalOrder(order, pending.size());
+	inserted.assign(pending.size(), false);
+	i = 0;
+	while (i < order.size())
 	{
-		// Always push smaller to a, larger to b
-		if (v[i] < v[i + 1])
+		idx = order[i];
+		if (!inserted[idx])
 		{
-			a.push_back(v[i]);
-			b.push_back(v[i + 1]);
+			binaryInsert(chain, pending[idx]);
+			inserted[idx] = true;
+		}
+		i++;
+	}
+	i = 0;
+	while (i < pending.size())
+	{
+		if (!inserted[i])
+			binaryInsert(chain, pending[i]);
+		i++;
+	}
+}
+
+/*
+ * Splits input into smalls (a) and bigs (b) in lockstep pairs.
+ * If input is odd, the last element is saved as straggler.
+ */
+template <typename Container>
+static void	splitPairs(const Container &input,
+			Container &a,
+			Container &b,
+			bool &hasStraggler,
+			int &straggler)
+{
+	std::size_t	i;
+
+	a.clear();
+	b.clear();
+	hasStraggler = false;
+	straggler = 0;
+	if (input.size() % 2 != 0)
+	{
+		hasStraggler = true;
+		straggler = input.back();
+	}
+	i = 0;
+	while (i + 1 < input.size())
+	{
+		if (input[i] < input[i + 1])
+		{
+			a.push_back(input[i]);
+			b.push_back(input[i + 1]);
 		}
 		else
 		{
-			a.push_back(v[i + 1]);
-			b.push_back(v[i]);
+			a.push_back(input[i + 1]);
+			b.push_back(input[i]);
 		}
+		i += 2;
 	}
+}
 
-	// 2) Recursively sort bigs
-	fordJohnsonSortVector(b);
+/* Ford-Johnson Vector Helpers */
 
-	// 3) Build chain: a[0] first (free insert), then all sorted bigs
-	std::vector<int>	chain;
-	std::vector<int>	pending;
+/* Copies sorted bigs into chain — starting point for insertion */
+static void	buildMainChainVector(std::vector<int> &chain,
+			const std::vector<int> &b)
+{
+	std::size_t	i;
 
-	chain.reserve(v.size());
-	pending.reserve(a.size());
-
-	// a[0] <= b[0] guaranteed, prepend costs 0 comparisons
-	chain.push_back(a[0]);
-	for (std::size_t i = 0; i < b.size(); ++i)
+	chain.clear();
+	i = 0;
+	while (i < b.size())
+	{
 		chain.push_back(b[i]);
+		i++;
+	}
+}
 
-	// 4) Build pending: a[1..n], then straggler if odd
-	for (std::size_t i = 1; i < a.size(); ++i)
+/* Collects all smalls and straggler into pending for insertion */
+static void	buildPendingVector(std::vector<int> &pending,
+			const std::vector<int> &a,
+			bool hasStraggler,
+			int straggler)
+{
+	std::size_t	i;
+
+	pending.clear();
+	i = 0;
+	while (i < a.size())
+	{
 		pending.push_back(a[i]);
+		i++;
+	}
 	if (hasStraggler)
 		pending.push_back(straggler);
+}
 
-	// 5) Insert pending into chain in Jacobsthal order
-	insertPending(chain, pending);
+static void	fordJohnsonSortVector(std::vector<int> &v)
+{
+	std::vector<int>	a;
+	std::vector<int>	b;
+	std::vector<int>	chain;
+	std::vector<int>	pending;
+	bool			hasStraggler;
+	int			straggler;
 
-	// 6) Write sorted result back
+	if (v.size() <= 1)
+		return ;
+	splitPairs(v, a, b, hasStraggler, straggler);
+	fordJohnsonSortVector(b);        /* recursively sort bigs */
+	buildMainChainVector(chain, b);  /* chain = sorted bigs */
+	buildPendingVector(pending, a, hasStraggler, straggler);
+	insertPending(chain, pending);   /* merge smalls into chain */
 	v.swap(chain);
+}
+
+/* Ford-Johnson Deque Helpers */
+
+/* Copies sorted bigs into chain — starting point for insertion */
+static void	buildMainChainDeque(std::deque<int> &chain,
+			const std::deque<int> &b)
+{
+	std::size_t	i;
+
+	chain.clear();
+	i = 0;
+	while (i < b.size())
+	{
+		chain.push_back(b[i]);
+		i++;
+	}
+}
+
+/* Collects all smalls and straggler into pending for insertion */
+static void	buildPendingDeque(std::deque<int> &pending,
+			const std::deque<int> &a,
+			bool hasStraggler,
+			int straggler)
+{
+	std::size_t	i;
+
+	pending.clear();
+	i = 0;
+	while (i < a.size())
+	{
+		pending.push_back(a[i]);
+		i++;
+	}
+	if (hasStraggler)
+		pending.push_back(straggler);
 }
 
 static void	fordJohnsonSortDeque(std::deque<int> &d)
 {
-	if (d.size() <= 1)
-		return ;
-
-	// 1) Split into smalls (a) and bigs (b), save straggler if odd
 	std::deque<int>	a;
 	std::deque<int>	b;
+	std::deque<int>	chain;
+	std::deque<int>	pending;
 	bool		hasStraggler;
 	int		straggler;
 
-	hasStraggler = (d.size() % 2 != 0);
-	straggler = hasStraggler ? d.back() : 0;
-
-	for (std::size_t i = 0; i + 1 < d.size(); i += 2)
-	{
-		// Always push smaller to a, larger to b
-		if (d[i] < d[i + 1])
-		{
-			a.push_back(d[i]);
-			b.push_back(d[i + 1]);
-		}
-		else
-		{
-			a.push_back(d[i + 1]);
-			b.push_back(d[i]);
-		}
-	}
-
-	// 2) Recursively sort bigs
+	if (d.size() <= 1)
+		return ;
+	splitPairs(d, a, b, hasStraggler, straggler);
 	fordJohnsonSortDeque(b);
-
-	// 3) Build chain: a[0] first (free insert), then all sorted bigs
-	std::deque<int>	chain;
-	std::deque<int>	pending;
-
-	// a[0] <= b[0] guaranteed, prepend costs 0 comparisons
-	chain.swap(b); // O(1) — b becomes chain instantly
-	chain.insert(chain.begin(), a[0]); // prepend a[0]
-
-	// 4) Build pending: a[1..n], then straggler if odd
-	for (std::size_t i = 1; i < a.size(); ++i)
-		pending.push_back(a[i]);
-	if (hasStraggler)
-		pending.push_back(straggler);
-
-	// 5) Insert pending into chain in Jacobsthal order
+	// Chain starts with sorted bigs only
+	buildMainChainDeque(chain, b);
+	// All smalls go into pending — no free prepend since pairing is lost
+	buildPendingDeque(pending, a, hasStraggler, straggler);
 	insertPending(chain, pending);
-	
-	// 6) Write sorted result back
 	d.swap(chain);
+}
+
+static void	fillVector(int argc, char **argv, std::vector<int> &v)
+{
+	int	i;
+	int	val;
+
+	v.clear();
+	i = 1;
+	while (i < argc)
+	{
+		val = validateAndParse(argv[i]);
+		v.push_back(val);
+		i++;
+	}
+	if (v.empty())
+		throw PmergeMe::Error("Error");
+}
+
+static void	fillDeque(int argc, char **argv, std::deque<int> &d)
+{
+	int	i;
+	int	val;
+
+	d.clear();
+	i = 1;
+	while (i < argc)
+	{
+		val = validateAndParse(argv[i]);
+		d.push_back(val);
+		i++;
+	}
+	if (d.empty())
+		throw PmergeMe::Error("Error");
 }
 
 /* Core Logic */
 void	PmergeMe::run(int argc, char **argv)
 {
-	std::clock_t	start;
-	std::clock_t	end;
-	long		vecMicros;
-	long		deqMicros;
+	double	start;
+	double	end;
+	double	vecMicros;
+	double	deqMicros;
 
 	if (argc < 2)
 		throw PmergeMe::Error("Error");
 
 	_vec.clear();
 	_deq.clear();
-	fillContainers(argc, argv, _vec, _deq);
-
+	fillVector(argc, argv, _vec);
 	printSequence("Before: ", _vec);
+	_vec.clear();
 
 	// Vector Sorting Timer
-	start = std::clock();
+	start = getTimeMicros();
+	fillVector(argc, argv, _vec);
 	fordJohnsonSortVector(_vec);
-	end = std::clock();
-	vecMicros = clockToMicros(end - start);
+	end = getTimeMicros();
+	vecMicros = end - start;
 
 	// Deque Sorting Timer
-	start = std::clock();
+	start = getTimeMicros();
+	fillDeque(argc, argv, _deq);
 	fordJohnsonSortDeque(_deq);
-	end = std::clock();
-	deqMicros = clockToMicros(end - start);
+	end = getTimeMicros();
+	deqMicros = end - start;
 
 	// Output
 	printSequence("After: ", _vec);
+
+	std::cout << std::fixed << std::setprecision(3);
+
 	std::cout << "Time to process a range of " << _vec.size()
-		<< " elements with std::vector: " << vecMicros << " us" << std::endl;
+		<< " elements with std::vector : " << vecMicros << " us" << std::endl;
+
 	std::cout << "Time to process a range of " << _deq.size()
-		<< " elements with std::deque: " << deqMicros << " us" << std::endl;
+		<< " elements with std::deque : " << deqMicros << " us" << std::endl;
 }
