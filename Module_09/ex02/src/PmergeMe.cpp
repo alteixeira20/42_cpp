@@ -240,57 +240,6 @@ static void	insertFull(Chain &chain, int value)
 	chain.insert(chain.begin() + left, value);
 }
 /* Sorting using Ford-Johnson (merge-insertion) for vector & deque */
-template <typename IntContainer>
-static void	buildPairs(const IntContainer &input,
-			     std::vector<PmergeMe::Pair> &pairs,
-			     bool &hasStraggler,
-			     int &straggler)
-{
-	std::size_t	i;
-	PmergeMe::Pair	p;
-
-	pairs.clear();
-	pairs.reserve(input.size() / 2);
-	hasStraggler = false;
-	straggler = 0;
-	i = 0;
-	while (i + 1 < input.size())
-	{
-		// Always assign smaller to p.small, larger to p.big
-		if (input[i] < input[i + 1])
-		{
-			p.small = input[i];
-			p.big = input[i + 1];
-		}
-		else
-		{
-			p.small = input[i + 1];
-			p.big = input[i];
-		}
-		pairs.push_back(p);
-		i += 2;
-	}
-	// If odd number of elements, save the leftover as straggler
-	if (i < input.size())
-	{
-		hasStraggler = true;
-		straggler = input[i];
-	}
-}
-
-template <typename OutContainer>
-static void	extractBigs(const std::vector<PmergeMe::Pair> &pairs, OutContainer &bigs)
-{
-	std::size_t	i;
-
-	bigs.clear();
-	i = 0;
-	while (i < pairs.size())
-	{
-		bigs.push_back(pairs[i].big);
-		i++;
-	}
-}
 
 static void	fordJohnsonSortVector(std::vector<int> &v)
 {
