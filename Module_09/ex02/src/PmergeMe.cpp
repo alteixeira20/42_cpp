@@ -13,14 +13,11 @@
 #include "PmergeMe.hpp"
 
 #include <iostream>	// std::cout, std::cerr
-#include <sstream>	// std::istringstream
 #include <cstdlib>	// std::strtol
 #include <cerrno>	// errno
 #include <ctime>	// std::clouck, CLOCKS_PER_SEC
 #include <climits>	// INT_MAX
 #include <cctype>	// std::is_digit
-#include <iomanip>	// std::setprecision
-#include <algorithm>	// std::lower_bound, std::find
 
 /* Local Helpers */
 
@@ -136,89 +133,6 @@ static void	nextJacobsthal(std::size_t &j0, std::size_t &j1)
 	j1 = next;
 }
 
-static void	insertGroup(std::size_t from, std::size_t to,
-			std::vector<std::size_t> &order, std::vector<bool> &used)
-{
-	std::size_t	i;
-
-	i = to;
-	while (i >= from)
-	{
-		// Only add index if not already scheduled
-		if (!used[i])
-		{
-			order.push_back(i);
-			used[i] = true;
-		}
-		// Guard against size_t underflow wrapping around on i == 0
-		if (i == 0)
-			break ;
-		i--;
-	}
-}
-
-static std::vector<std::size_t>	buildJacobsthalOrder(std::size_t n)
-{
-	std::vector<std::size_t>	order;
-	std::vector<bool>		used(n, false);
-	std::size_t			j0;
-	std::size_t			j1;
-	std::size_t			groupEnd;
-
-
-	if (n == 0)
-		return (order);
-
-	order.reserve(n);
-
-	// Index 0 is always inserted first — its small costs 0 comparisons
-	order.push_back(0);
-	used[0] = true;
-
-	// J(2)=1, J(3)=3 — first real group boundary
-	j0 = 1; // J(2)
-	j1 = 3; // J(3)
-	
-	// Each iteration handles one Jacobsthal group [j0..j1-1]
-	while (j0 < n)
-	{
-		if (j1 < n)
-			groupEnd = j1;
-		else
-			groupEnd = n - 1;
-		insertGroup(j0, groupEnd, order, used);
-		nextJacobsthal(j0, j1);
-	}
-
-	// Safety net: append any indices not yet covered
-	for (std::size_t i = 1; i < n; ++i)
-		if (!used[i])
-			order.push_back(i);
-
-	return (order);
-}
-
-template <typename Chain>
-static void	insertSmallBounded(Chain &chain, int small, int bound)
-{
-	int	left;
-	int	right;
-	int	mid;
-
-	left = 0;
-	right = bound; // bound is already an index, not a value
-	// Binary search only up to the paired big's position
-	while (left < right)
-	{
-		mid = left + (right - left) / 2;
-		if (small < chain[mid])
-			right = mid;
-		else
-			left = mid + 1;
-	}
-	chain.insert(chain.begin() + left, small);
-}
-
 template <typename Chain>
 static void	insertFull(Chain &chain, int value)
 {
@@ -239,6 +153,42 @@ static void	insertFull(Chain &chain, int value)
 	}
 	chain.insert(chain.begin() + left, value);
 }
+
+template <typename Chain, typename Pending>
+static void	insertPending(Chain &chain, Pending &pending)
+{
+	std::size_t	j0;
+	std::size_t	j1;
+	std::size_t	groupEnd;
+	std::size_t	prev;
+	std::size_t	i;
+
+	if (pending.empty())
+		return ;
+
+	// Index 0 always inserted first — costs 0 comparisons
+	insertFull(chain, pending[0]);
+
+	j0 = 1; // J(2)
+	j1 = 3; // J(3)
+	prev = 1;
+
+	// Each iteration processes one Jacobsthal group descending
+	while (prev < pending.size())
+	{
+		groupEnd = (j1 < pending.size() ? j1 : pending.size() - 1);
+		i = groupEnd;
+		while (i >= prev && i < pending.size())
+		{
+			insertFull(chain, pending[i]);
+			if (i == 0) break ;
+			i--;
+		}
+		prev = j1 + 1;
+		nextJacobsthal(j0, j1);
+	}
+}
+
 /* Sorting using Ford-Johnson (merge-insertion) for vector & deque */
 
 static void	fordJohnsonSortVector(std::vector<int> &v)
@@ -294,18 +244,7 @@ static void	fordJohnsonSortVector(std::vector<int> &v)
 		pending.push_back(straggler);
 
 	// 5) Insert pending into chain in Jacobsthal order
-	std::vector<std::size_t>	order = buildJacobsthalOrder(pending.size());
-	std::size_t			k;
-	std::size_t			idx;
-
-	k = 0;
-	while (k < order.size())
-	{
-		idx = order[k];
-		if (idx < pending.size())
-			insertFull(chain, pending[idx]);
-		k++;
-	}
+	insertPending(chain, pending);
 
 	// 6) Write sorted result back
 	v.swap(chain);
@@ -348,9 +287,8 @@ static void	fordJohnsonSortDeque(std::deque<int> &d)
 	std::deque<int>	pending;
 
 	// a[0] <= b[0] guaranteed, prepend costs 0 comparisons
-	chain.push_back(a[0]);
-	for (std::size_t i = 0; i < b.size(); ++i)
-		chain.push_back(b[i]);
+	chain.swap(b); // O(1) — b becomes chain instantly
+	chain.insert(chain.begin(), a[0]); // prepend a[0]
 
 	// 4) Build pending: a[1..n], then straggler if odd
 	for (std::size_t i = 1; i < a.size(); ++i)
@@ -359,19 +297,8 @@ static void	fordJohnsonSortDeque(std::deque<int> &d)
 		pending.push_back(straggler);
 
 	// 5) Insert pending into chain in Jacobsthal order
-	std::vector<std::size_t>	order = buildJacobsthalOrder(pending.size());
-	std::size_t			k;
-	std::size_t			idx;
-
-	k = 0;
-	while (k < order.size())
-	{
-		idx = order[k];
-		if (idx < pending.size())
-			insertFull(chain, pending[idx]);
-		k++;
-	}
-
+	insertPending(chain, pending);
+	
 	// 6) Write sorted result back
 	d.swap(chain);
 }
